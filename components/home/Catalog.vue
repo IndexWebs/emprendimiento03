@@ -3,11 +3,11 @@
     <ProductCard
       v-for="(product, index) in products"
       :key="index"
-      :name="product.product_name"
-      :category="product.product_categories"
-      :image="product.main_variant_image"
-      :slug="product.product_handle"
-      :price="product.variant_price"
+      :name="product.name"
+      :category="product.category"
+      :image="product.image"
+      :slug="product.handle"
+      :price="product.price"
     />
   </div>
 </template>

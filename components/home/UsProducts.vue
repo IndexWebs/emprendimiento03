@@ -26,7 +26,7 @@ export default {
   },
   created() {
     const response = db
-      .collection("Vinos")
+      .collection("products")
       .limit(4)
       .get();
     response

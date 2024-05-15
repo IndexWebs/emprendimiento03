@@ -17,12 +17,12 @@ const actions = {
     commit("SET_LOADING", true);
 
     const storageRef = firebase.storage().ref();
-    const imageRef = storageRef.child(`products/${productData.name}/${productData.main_variant_image.name}`);
-    const snapshot = await imageRef.put(productData.main_variant_image);
+    const imageRef = storageRef.child(`products/${productData.name}/${productData.image.name}`);
+    const snapshot = await imageRef.put(productData.image);
     const downloadURL = await snapshot.ref.getDownloadURL();
-    productData.main_variant_image = downloadURL;
+    productData.image = downloadURL;
 
-    await db.collection("Vinos").add(productData);
+    await db.collection("products").add(productData);
 
     commit("SET_LOADING", false);
     // Puedes devolver algún valor si es necesario

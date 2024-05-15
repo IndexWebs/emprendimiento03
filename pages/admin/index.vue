@@ -20,14 +20,14 @@
             scope="row"
             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
           >
-            {{ product.product_name }}
+            {{ product.name }}
           </th>
-          <td class="px-6 py-4">{{ product.product_categories }}</td>
-          <td class="px-6 py-4">${{ product.variant_price }}</td>
-          <td class="px-6 py-4">{{ product.product_description }}</td>
+          <td class="px-6 py-4">{{ product.category }}</td>
+          <td class="px-6 py-4">${{ product.price }}</td>
+          <td class="px-6 py-4">{{ product.description }}</td>
           <td class="px-6 py-4 flex items-center space-x-2">
             <nuxt-link
-              :to="'admin/' + product.product_handle"
+              :to="'admin/' + product.handle"
               class="font-medium text-secondary hover:underline"
               ><EditIcon class="w-5 h-5"
             /></nuxt-link>
@@ -63,7 +63,7 @@ export default {
   methods: {
     getDocuments() {
       this.products = [];
-      const response = db.collection("Vinos").get();
+      const response = db.collection("products").get();
       response
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -88,7 +88,7 @@ export default {
         return; // No se hace nada si el usuario cancela
       }
 
-      const ref = db.collection("Vinos").doc(id);
+      const ref = db.collection("products").doc(id);
 
       // Obtener el documento para acceder a la referencia de la imagen
       ref
@@ -97,7 +97,7 @@ export default {
           if (doc.exists) {
             const data = doc.data();
             console.log("data", data);
-            const imageUrl = data.main_variant_image; // Asegúrate de usar el campo correcto
+            const imageUrl = data.image; // Asegúrate de usar el campo correcto
             // Eliminar el documento de Firestore
             ref
               .delete()

@@ -9,7 +9,7 @@
           <li>
             <div class="flex items-center">
               <a href="#" class="mr-2 text-sm font-medium text-gray-900"
-                >Vinos</a
+                >Products</a
               >
               <svg
                 width="16"
@@ -27,7 +27,7 @@
           <li>
             <div class="flex items-center">
               <a href="#" class="mr-2 text-sm font-medium text-gray-900">{{
-                product.product_categories
+                product.category
               }}</a>
               <svg
                 width="16"
@@ -47,7 +47,7 @@
               href="#"
               aria-current="page"
               class="font-medium text-gray-500 hover:text-gray-600"
-              >{{ product.product_name }}</a
+              >{{ product.name }}</a
             >
           </li>
         </ol>
@@ -57,7 +57,7 @@
       <div class="grid grid-cols-12 mx-auto pt-8">
         <div class="col-span-12 md:col-span-6 pb-8 max-h-80 mt-4 mr-8">
           <img
-            :src="product.main_variant_image"
+            :src="product.image"
             alt="Model wearing plain white basic tee."
             class="h-full w-full object-contain object-center"
           />
@@ -68,17 +68,17 @@
           <h1
             class="text-2xl font-bold text-secondary sm:text-3xl mb-2 uppercase"
           >
-            {{ product.product_name }}
+            {{ product.name }}
           </h1>
           <p class="text-3xl text-secondary mb-2">
-            ${{ product.variant_price }}
+            ${{ product.price }}
           </p>
           <InputNumber :value="cantidad" @input="updaeValue" class="mb-2" />
           <PrimaryButton @click="addToCart" text="Agregar al carrito" />
           <div class="mt-10">
             <h3 class="text-sm font-medium text-gray-900">Detalles</h3>
             <div class="mt-6">
-              <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
+              <!-- <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
                 <li class="text-gray-400">
                   <span class="text-gray-600">{{ product.product_bodega ? product.product_bodega : '-' }}</span>
                 </li>
@@ -86,15 +86,15 @@
               <li class="text-gray-400">
                   <span class="text-gray-600">{{product.product_year ? product.product_year : '-'}}</span>
                 </li>
-  <!-- 
+  
                 <li class="text-gray-400">
                   <span class="text-gray-600">URUGUAY</span>
                 </li>
 
                 <li class="text-gray-400">
                   <span class="text-gray-600">750CC</span>
-                </li> -->
-              </ul>
+                </li>
+              </ul> -->
             </div>
           </div>
           <!-- Reviews -->
@@ -190,7 +190,7 @@
           </div> -->
         </div>
         <p class="col-span-12 text-gray-500 font-light leading-7 mb-2">
-            {{ product.product_description }}
+            {{ product.description }}
           </p>
       </div>
     </div>
@@ -211,8 +211,8 @@ export default {
   components: { InputNumber, PrimaryButton },
   async asyncData({ params }) {
     const ref = db
-      .collection("Vinos")
-      .where("product_handle", "==", params.slug);
+      .collection("products")
+      .where("handle", "==", params.slug);
     let snapshot;
     try {
       snapshot = await ref.get();
@@ -226,13 +226,13 @@ export default {
       this.cantidad = newOne;
     },
     addToCart() {
-      const total = parseInt(this.product.variant_price) * this.cantidad;
+      const total = parseInt(this.product.price) * this.cantidad;
       this.$store.commit("addItem", {
         id: this.product.id,
-        name: this.product.product_name,
-        image: this.product.main_variant_image,
+        name: this.product.name,
+        image: this.product.image,
         qty: this.cantidad,
-        category: this.product.product_categories,
+        category: this.product.category,
         price: total,
       });
       eventBus.$emit("addToCart");

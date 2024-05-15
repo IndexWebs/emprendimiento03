@@ -114,11 +114,9 @@ export default {
   components: { PrimaryButton },
   computed: {
     items() {
-      // Obtenemos los items del carrito desde el store
       return this.$store.state.cart.items;
     },
     total() {
-      // Calculamos el total de los items en el carrito
       return this.items.reduce((acc, item) => acc + item.price, 0);
     },
   },
@@ -151,5 +149,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
