@@ -1,17 +1,12 @@
 <template>
   <div class="pb-8">
-    <section
-      class="flex flex-col items-start justify-center px-8 md:px-32 h-48 bg-secondary -mx-10 md:-mx-32 -mt-16 mb-8 banner bg-no-repeat"
-    ></section>
+    <section class="flex flex-col items-start justify-center px-8 md:px-32 h-48 bg-secondary -mx-10 md:-mx-32 -mt-16 mb-8 banner bg-no-repeat"></section>
     <section class="-mt-20">
       <Categories @category-selected="filterProducts" />
       <div class="text-center pt-10 flex flex-col justify-center items-center">
         <h1 class="text-primary">Get Doggy Stickers!</h1>
-        <p class="text-gray-400 leading-6">
-          Times are tough. Liven up your home with some cute Doggy Stickers. 🐶
-        </p>
+        <p class="text-gray-400 leading-6">Times are tough. Liven up your home with some cute Doggy Stickers. 🐶</p>
       </div>
-
       <Catalog :products="filteredProducts" />
     </section>
   </div>
@@ -20,50 +15,21 @@
 <script>
 import Categories from "~/components/catalog/Categories.vue";
 import Catalog from "~/components/home/Catalog.vue";
-import { db } from "@/plugins/firebase";
+import { mapState, mapActions } from 'vuex';
+
 export default {
   components: {
     Catalog,
     Categories,
   },
-  data() {
-    return {
-      products: [],
-      filteredProducts: [],
-    };
+  computed: {
+    ...mapState(['filteredProducts']),
   },
   created() {
-    // Carga todos los productos al inicio
-    const response = db.collection("products").get();
-    response
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          const product = {
-            id: doc.id,
-            ...doc.data(),
-          };
-          this.products.push(product);
-        });
-        // Al cargar los productos, también los filtramos inicialmente mostrando todos
-        this.filteredProducts = this.products;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.fetchProducts();
   },
-
   methods: {
-    filterProducts(category) {
-      if (category === "") {
-        // Si se selecciona la categoría 'Todos', mostramos todos los productos
-        this.filteredProducts = this.products;
-      } else {
-        // Filtramos los productos según la categoría seleccionada
-        this.filteredProducts = this.products.filter((product) =>
-          product.category.includes(category)
-        );
-      }
-    },
+    ...mapActions(['fetchProducts', 'filterProducts']),
   },
 };
 </script>

@@ -90,13 +90,14 @@
         <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
           <p>
             o
-            <button
-              type="button"
+            <nuxt-link
+              @click="close"
+              to="/"
               class="font-medium text-primary text-opacity-70 hover:text-opacity-50 transition-all duration-300 ease-in-out"
             >
               Seguir comprando
               <span aria-hidden="true"> &rarr;</span>
-            </button>
+            </nuxt-link>
           </p>
         </div>
       </div>
@@ -125,13 +126,13 @@ export default {
       this.$emit("click");
     },
     enviarOrden() {
-      var number = +59896260462;
+      var number = +59897955640;
       var pedido = "";
       var total = this.total;
       const itemsLength = this.items.length;
       for (let i = 0; i < itemsLength; i++) {
         const item = this.items[i];
-        pedido = pedido + "x"+item.qty+' '+ item.name +' || ';
+        pedido = pedido + "x" + item.qty + " " + item.name + " || ";
         console.log(item.name + item.qty);
       }
       window.open(

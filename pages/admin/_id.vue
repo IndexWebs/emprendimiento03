@@ -1,10 +1,10 @@
 <template>
-  <div class="flex space-x-5" v-if="product">
-    <div class="w-1/2">
+  <div class="flex flex-col lg:flex-row space-x-5" v-if="product">
+    <div class="w-2/2 lg:w-1/2">
       <img :src="product.image" />
     </div>
 
-    <form class="w-1/2">
+    <form class="w-2/2 lg:w-1/2">
       <div class="relative z-0 w-full mb-6 group">
         <input
           type="text"
@@ -37,7 +37,7 @@
           <input
             type="text"
             v-model="product.category"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer uppercase"
             placeholder=" "
             required
           />

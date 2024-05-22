@@ -13,7 +13,7 @@
       <tbody>
         <tr
           v-for="product in products"
-          :key="product"
+          :key="product.id"
           class="bg-white border-b"
         >
           <th

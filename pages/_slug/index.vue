@@ -1,10 +1,10 @@
 <template>
   <div class="bg-white mx-0 md:mx-24 px-10 pb-8">
     <div class="pt-6">
-      <nav aria-label="Breadcrumb">
+      <nav aria-label="Breadcrumb" class="flex justify-between">
         <ol
           role="list"
-          class="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+          class="flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
         >
           <li>
             <div class="flex items-center">
@@ -51,9 +51,14 @@
             >
           </li>
         </ol>
+        <nuxt-link
+          to="/"
+          class="font-medium text-primary text-opacity-70 hover:text-opacity-50 transition-all duration-300 ease-in-out"
+        >
+          Volver al catalogo
+        </nuxt-link>
       </nav>
 
-      <!-- Product info -->
       <div class="grid grid-cols-12 mx-auto pt-8">
         <div class="col-span-12 md:col-span-6 pb-8 max-h-80 mt-4 mr-8">
           <img
@@ -63,16 +68,13 @@
           />
         </div>
 
-        <!-- Options -->
         <div class="pt-4 lg:row-span-3 lg:mt-0 col-span-12 md:col-span-6">
           <h1
             class="text-2xl font-bold text-secondary sm:text-3xl mb-2 uppercase"
           >
             {{ product.name }}
           </h1>
-          <p class="text-3xl text-secondary mb-2">
-            ${{ product.price }}
-          </p>
+          <p class="text-3xl text-secondary mb-2">${{ product.price }}</p>
           <InputNumber :value="cantidad" @input="updaeValue" class="mb-2" />
           <PrimaryButton @click="addToCart" text="Agregar al carrito" />
           <div class="mt-10">
@@ -190,8 +192,8 @@
           </div> -->
         </div>
         <p class="col-span-12 text-gray-500 font-light leading-7 mb-2">
-            {{ product.description }}
-          </p>
+          {{ product.description }}
+        </p>
       </div>
     </div>
   </div>
@@ -210,9 +212,7 @@ export default {
   },
   components: { InputNumber, PrimaryButton },
   async asyncData({ params }) {
-    const ref = db
-      .collection("products")
-      .where("handle", "==", params.slug);
+    const ref = db.collection("products").where("handle", "==", params.slug);
     let snapshot;
     try {
       snapshot = await ref.get();

@@ -17,13 +17,16 @@
       </div>
       <div class="grid md:grid-cols-2 md:gap-6">
         <div class="relative z-0 w-full mb-6 group">
-          <input
-            type="text"
+          <select
             v-model="product.category"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
             required
-          />
+          >
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option v-for="category in categories" :key="category.id">
+              {{ category.name }}
+            </option>
+          </select>
           <label
             class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             >Category</label
@@ -44,7 +47,7 @@
             >Precio</label
           >
         </div>
-        
+
         <div class="relative z-0 w-full mb-6 group">
           <input
             type="file"
@@ -86,8 +89,10 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import { db, firebase } from "@/plugins/firebase";
 import "firebase/storage";
+
 export default {
   middleware: "auth",
   layout: "admin",
@@ -97,14 +102,17 @@ export default {
         name: null,
         description: null,
         image: null,
-        handle: '',
+        handle: "",
         price: null,
         category: null,
       },
     };
   },
   computed: {
+    ...mapState(["categories"]),
+
     slug() {
+      console.log("category", categories);
       if (this.product.name) {
         this.handle = this.product.name.replace(/ /g, "-");
       } else {
@@ -112,7 +120,11 @@ export default {
       }
     },
   },
+  created() {
+    this.fetchCategories();
+  },
   methods: {
+    ...mapActions(["fetchCategories"]),
     onFileChange(event) {
       this.product.image = event.target.files[0]; // Set the image file to the product object
     },

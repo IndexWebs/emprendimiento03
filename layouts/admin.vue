@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Navbar />
-    <div class="px-32 py-32 bg-background min-h-screen">
+    <Navbar class="hidden lg:block" />
+    <div class="px-5 lg:px-32 py-5 lg:py-32 bg-background min-h-screen">
       <nuxt />
     </div>
   </div>
