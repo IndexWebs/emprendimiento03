@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar class="hidden lg:block" />
+    <Navbar />
     <div class="px-5 lg:px-32 py-5 lg:py-32 bg-background min-h-screen">
       <nuxt />
     </div>

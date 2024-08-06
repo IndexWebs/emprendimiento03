@@ -12,7 +12,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="product in products"
+          v-for="product in filteredProducts"
           :key="product.id"
           class="bg-white border-b"
         >
@@ -44,9 +44,10 @@
 </template>
 
 <script>
-import { db } from "@/plugins/firebase";
 import EditIcon from "~/components/shared/icons/EditIcon.vue";
 import TrashIcon from "~/components/shared/icons/TrashIcon.vue";
+import { mapState, mapActions } from 'vuex';
+
 export default {
   components: { EditIcon, TrashIcon },
   middleware: "auth",
@@ -56,53 +57,33 @@ export default {
       products: [],
     };
   },
-  created() {
-    this.getDocuments();
+  computed: {
+    ...mapState(['filteredProducts']),
   },
-
+  created() {
+    this.fetchProducts();
+  },
   methods: {
-    getDocuments() {
-      this.products = [];
-      const response = db.collection("products").get();
-      response
-        .then((snapshot) => {
-          snapshot.forEach((doc) => {
-            const product = {
-              id: doc.id,
-              ...doc.data(),
-            };
-            this.products.push(product);
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    // Dentro de tu método deleteDocument
+    ...mapActions(['fetchProducts', 'filterProducts']),
+  
     deleteDocument(id) {
-      // Confirmación antes de eliminar
       const confirmDelete = window.confirm(
         "¿Estás seguro de que quieres eliminar este documento?"
       );
       if (!confirmDelete) {
-        return; // No se hace nada si el usuario cancela
+        return; 
       }
-
       const ref = db.collection("products").doc(id);
-
-      // Obtener el documento para acceder a la referencia de la imagen
       ref
         .get()
         .then((doc) => {
           if (doc.exists) {
             const data = doc.data();
             console.log("data", data);
-            const imageUrl = data.image; // Asegúrate de usar el campo correcto
-            // Eliminar el documento de Firestore
+            const imageUrl = data.image;
             ref
               .delete()
               .then(() => {
-                // Eliminar la imagen de Firebase Storage
                 const storageRef = firebase.storage().refFromURL(imageUrl);
                 storageRef
                   .delete()
@@ -123,8 +104,6 @@ export default {
         .catch((error) => {
           console.error("Error al obtener el documento:", error);
         });
-
-      // Actualiza la lista de productos después de eliminar
       this.getDocuments();
     },
   },

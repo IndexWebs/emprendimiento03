@@ -1,5 +1,3 @@
-// store/index.js
-
 import Vuex from "vuex";
 import { db } from "@/plugins/firebase";
 
@@ -9,6 +7,7 @@ const createStore = () => {
       products: [],
       categories: [],
       filteredProducts: [],
+      product: {},
       cart: {
         items: [],
       },
@@ -24,6 +23,9 @@ const createStore = () => {
         // Mutación para establecer las categorías
         state.categories = categories;
       },
+      setProduct(state, product) {
+        state.product = product;
+      },
       addItem(state, payload) {
         // Agregamos un item al carrito
         state.cart.items.push(payload);
@@ -33,6 +35,9 @@ const createStore = () => {
         const index = state.cart.items.findIndex(
           (item) => item.id === payload.id
         );
+        if (index !== -1) {
+          state.cart.items.splice(index, 1);
+        }
       },
     },
     actions: {
@@ -60,6 +65,17 @@ const createStore = () => {
           commit("setCategories", categories);
         } catch (error) {
           console.error("Error fetching categories:", error);
+        }
+      },
+      async fetchProductBySlug({ commit }, slug) {
+        try {
+          const ref = db.collection("products").where("handle", "==", slug);
+          const snapshot = await ref.get();
+          const product = snapshot.docs.shift().data();
+          commit("setProduct", product);
+        } catch (error) {
+          console.error("Error fetching product:", error);
+          commit("setProduct", {});
         }
       },
       filterProducts({ state, commit }, category) {

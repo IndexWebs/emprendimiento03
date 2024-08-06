@@ -4,9 +4,9 @@
     class="fixed flex justify-end w-full min-h-screen bg-secondary z-10 top-0 bg-opacity-40"
   >
     <div
-      class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl min-h-screen"
+      class="flex h-20 flex-col overflow-y-scroll bg-white shadow-xl min-h-screen"
     >
-      <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+      <div class="flex-1 px-4 py-6 sm:px-6 overflow-scroll h-20">
         <div class="flex items-start justify-between">
           <h4 id="slide-over-title">Tu pedido</h4>
           <div class="ml-3 flex h-7 items-center">

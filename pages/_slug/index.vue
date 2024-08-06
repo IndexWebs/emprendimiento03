@@ -4,7 +4,7 @@
       <nav aria-label="Breadcrumb" class="flex justify-between">
         <ol
           role="list"
-          class="flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+          class="flex max-w-2xl items-center space-x-2 lg:max-w-7xl"
         >
           <li>
             <div class="flex items-center">
@@ -53,9 +53,9 @@
         </ol>
         <nuxt-link
           to="/"
-          class="font-medium text-primary text-opacity-70 hover:text-opacity-50 transition-all duration-300 ease-in-out"
+          class="font-medium text-secondary text-opacity-70 hover:text-opacity-50 transition-all duration-300 ease-in-out rounded-md uppercase text-xs"
         >
-          Volver al catalogo
+          <span>Volver</span>
         </nuxt-link>
       </nav>
 
@@ -79,7 +79,10 @@
           <PrimaryButton @click="addToCart" text="Agregar al carrito" />
           <div class="mt-10">
             <h3 class="text-sm font-medium text-gray-900">Detalles</h3>
-            <div class="mt-6">
+            <div class="mt-4">
+              <p class="col-span-12 text-gray-500 font-light leading-7 mb-2">
+                {{ product.description }}
+              </p>
               <!-- <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
                 <li class="text-gray-400">
                   <span class="text-gray-600">{{ product.product_bodega ? product.product_bodega : '-' }}</span>
@@ -191,36 +194,31 @@
             </div>
           </div> -->
         </div>
-        <p class="col-span-12 text-gray-500 font-light leading-7 mb-2">
-          {{ product.description }}
-        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { db } from "~/plugins/firebase";
 import eventBus from "@/plugins/eventBus";
 import InputNumber from "@/components/shared/inputs/InputNumber.vue";
 import PrimaryButton from "~/components/shared/PrimaryButton.vue";
+
 export default {
+  async fetch({ store, params }) {
+    await store.dispatch("fetchProductBySlug", params.slug);
+  },
   data() {
     return {
       cantidad: 1,
     };
   },
-  components: { InputNumber, PrimaryButton },
-  async asyncData({ params }) {
-    const ref = db.collection("products").where("handle", "==", params.slug);
-    let snapshot;
-    try {
-      snapshot = await ref.get();
-    } catch (e) {
-      return { product: {} };
-    }
-    return { product: snapshot.docs.shift().data() };
+  computed: {
+    product() {
+      return this.$store.state.product;
+    },
   },
+  components: { InputNumber, PrimaryButton },
   methods: {
     updaeValue(newOne) {
       this.cantidad = newOne;
@@ -240,5 +238,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
