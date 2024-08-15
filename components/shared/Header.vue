@@ -11,7 +11,7 @@
         </nuxt-link>
       </div>
 
-      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+      <div class="flex lg:flex-1 lg:justify-end">
         <button
           @click="toggleCart"
           class="text-xs uppercase font-semibold leading-6 !text-primary text-opacity-60"
