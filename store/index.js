@@ -1,5 +1,5 @@
 import Vuex from "vuex";
-import { db } from "@/plugins/firebase";
+import { db, firebase } from "@/plugins/firebase";
 
 const createStore = () => {
   return new Vuex.Store({
@@ -20,21 +20,16 @@ const createStore = () => {
         state.filteredProducts = filteredProducts;
       },
       setCategories(state, categories) {
-        // Mutación para establecer las categorías
         state.categories = categories;
       },
       setProduct(state, product) {
         state.product = product;
       },
       addItem(state, payload) {
-        // Agregamos un item al carrito
         state.cart.items.push(payload);
       },
       removeItem(state, payload) {
-        // Removemos un item del carrito
-        const index = state.cart.items.findIndex(
-          (item) => item.id === payload.id
-        );
+        const index = state.cart.items.findIndex((item) => item.id === payload.id);
         if (index !== -1) {
           state.cart.items.splice(index, 1);
         }
@@ -55,7 +50,6 @@ const createStore = () => {
         }
       },
       async fetchCategories({ commit }) {
-        // Acción para obtener las categorías
         try {
           const response = await db.collection("categories").get();
           const categories = response.docs.map((doc) => ({
@@ -79,7 +73,6 @@ const createStore = () => {
         }
       },
       filterProducts({ state, commit }, category) {
-        console.log("Filtering products by category:", category);
         if (category === "") {
           commit("setFilteredProducts", state.products);
         } else {
@@ -87,6 +80,59 @@ const createStore = () => {
             product.category.includes(category)
           );
           commit("setFilteredProducts", filteredProducts);
+        }
+      },
+      async addProduct({ commit }, product) {
+        try {
+          // Subir la imagen a Firebase Storage
+          const storageRef = firebase.storage().ref();
+          const imageRef = storageRef.child(`products/${product.name}/${product.image.name}`);
+          const snapshot = await imageRef.put(product.image);
+          const downloadURL = await snapshot.ref.getDownloadURL();
+
+          // Actualizar el producto con la URL de la imagen
+          product.image = downloadURL;
+
+          // Guardar el producto en Firestore
+          await db.collection("products").add(product);
+
+          // (Opcional) Fetch de nuevo los productos después de agregar uno nuevo
+          const response = await db.collection("products").get();
+          const products = response.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          commit("setProducts", products);
+        } catch (error) {
+          console.error("Error adding product:", error);
+        }
+      },
+
+      async deleteProduct({ dispatch }, id) {
+        try {
+          const ref = db.collection("products").doc(id);
+          const doc = await ref.get();
+
+          if (doc.exists) {
+            const data = doc.data();
+            const imageUrl = data.image;
+
+            // Eliminar el documento
+            await ref.delete();
+
+            // Eliminar la imagen de Firebase Storage
+            const storageRef = firebase.storage().refFromURL(imageUrl);
+            await storageRef.delete();
+
+            console.log("Producto y su imagen eliminados correctamente.");
+
+            // Refetch los productos después de eliminar
+            await dispatch("fetchProducts");
+          } else {
+            console.log("No se encontró el documento.");
+          }
+        } catch (error) {
+          console.error("Error al eliminar el producto:", error);
         }
       },
     },

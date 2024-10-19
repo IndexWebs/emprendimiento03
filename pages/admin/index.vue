@@ -64,47 +64,16 @@ export default {
     this.fetchProducts();
   },
   methods: {
-    ...mapActions(['fetchProducts', 'filterProducts']),
+    ...mapActions(['fetchProducts', 'filterProducts', 'deleteProduct']),
   
-    deleteDocument(id) {
+    async deleteDocument(id) {
       const confirmDelete = window.confirm(
         "¿Estás seguro de que quieres eliminar este documento?"
       );
       if (!confirmDelete) {
         return; 
       }
-      const ref = db.collection("products").doc(id);
-      ref
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            console.log("data", data);
-            const imageUrl = data.image;
-            ref
-              .delete()
-              .then(() => {
-                const storageRef = firebase.storage().refFromURL(imageUrl);
-                storageRef
-                  .delete()
-                  .then(() => {
-                    console.log("Imagen eliminada de Firebase Storage.");
-                  })
-                  .catch((error) => {
-                    console.error("Error al eliminar la imagen:", error);
-                  });
-              })
-              .catch((error) => {
-                console.error("Error al eliminar el documento:", error);
-              });
-          } else {
-            console.log("No se encontró el documento.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error al obtener el documento:", error);
-        });
-      this.getDocuments();
+      await this.deleteProduct(id); // Llama a la acción del store
     },
   },
 };

@@ -143,7 +143,7 @@ export default {
           image: productData.image,
           name: productData.name,
           handle: productData.handle,
-          categories: productData.category,
+          category: productData.category,
           price: productData.price,
           description: productData.description,
         };
