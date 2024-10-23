@@ -1,6 +1,6 @@
 import Vuex from "vuex";
 import { db, firebase } from "@/plugins/firebase";
-
+import "firebase/storage";
 const createStore = () => {
   return new Vuex.Store({
     state: {
@@ -72,14 +72,72 @@ const createStore = () => {
           commit("setProduct", {});
         }
       },
-      filterProducts({ state, commit }, category) {
-        if (category === "") {
-          commit("setFilteredProducts", state.products);
-        } else {
-          const filteredProducts = state.products.filter((product) =>
-            product.category.includes(category)
-          );
+      async filterProducts({ commit }, category) {
+        try {
+          let query = db.collection("products");
+          
+          // Si se ha seleccionado una categoría específica, hacer la consulta filtrada
+          if (category !== "") {
+            query = query.where("category", "==", category);
+          }
+      
+          const snapshot = await query.get();
+          const filteredProducts = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          
           commit("setFilteredProducts", filteredProducts);
+        } catch (error) {
+          console.error("Error filtering products:", error);
+        }
+      },
+      async updateProduct({ commit }, product) {
+        try {
+          const productQuery = await db
+            .collection("products")
+            .where("handle", "==", product.handle)
+            .get();
+
+          if (productQuery.empty) {
+            throw new Error("Producto no encontrado");
+          }
+
+          const productId = productQuery.docs[0].id;
+          const productRef = db.collection("products").doc(productId);
+
+          await productRef.update({
+            name: product.name,
+            handle: product.handle,
+            category: product.category,
+            price: product.price,
+            description: product.description,
+          });
+
+          console.log("Producto actualizado correctamente");
+
+          // Vuelve a obtener los productos si es necesario
+          const response = await db.collection("products").get();
+          const products = response.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          commit("setProducts", products);
+        } catch (error) {
+          console.error("Error al actualizar el producto:", error);
+          throw error;
+        }
+      },
+      async uploadImage({ commit }, file) {
+        try {
+          const storageRef = firebase.storage().ref();
+          const fileRef = storageRef.child(`products/${file.name}`);
+          const snapshot = await fileRef.put(file);
+          const downloadURL = await snapshot.ref.getDownloadURL();
+          return downloadURL;
+        } catch (error) {
+          console.error("Error al subir el archivo:", error);
+          throw error;
         }
       },
       async addProduct({ commit }, product) {
@@ -107,32 +165,32 @@ const createStore = () => {
           console.error("Error adding product:", error);
         }
       },
-
-      async deleteProduct({ dispatch }, id) {
+      async deleteProduct({ commit, dispatch }, id) {
         try {
           const ref = db.collection("products").doc(id);
           const doc = await ref.get();
 
-          if (doc.exists) {
-            const data = doc.data();
-            const imageUrl = data.image;
+          if (!doc.exists) {
+            throw new Error("Producto no encontrado");
+          }
 
-            // Eliminar el documento
-            await ref.delete();
+          const data = doc.data();
+          const imageUrl = data.image;
 
-            // Eliminar la imagen de Firebase Storage
+          await ref.delete();
+          console.log("Documento eliminado correctamente");
+
+          if (imageUrl) {
             const storageRef = firebase.storage().refFromURL(imageUrl);
             await storageRef.delete();
-
-            console.log("Producto y su imagen eliminados correctamente.");
-
-            // Refetch los productos después de eliminar
-            await dispatch("fetchProducts");
-          } else {
-            console.log("No se encontró el documento.");
+            console.log("Imagen eliminada de Firebase Storage.");
           }
+
+          // Refresca los productos después de eliminar uno
+          await dispatch("fetchProducts");
         } catch (error) {
           console.error("Error al eliminar el producto:", error);
+          throw error;
         }
       },
     },

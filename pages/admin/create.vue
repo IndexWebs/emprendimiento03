@@ -95,7 +95,7 @@
         @click.prevent="onSubmitButton"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Submit
+      {{ isLoading ? 'Cargando...' : 'Crear' }}
       </button>
     </form>
   </div>
@@ -117,6 +117,7 @@ export default {
         price: null,
         category: null,
       },
+      isLoading:false
     };
   },
   computed: {
@@ -139,9 +140,15 @@ export default {
       this.product.image = event.target.files[0]; // Establece la imagen en el producto
     },
     async onSubmitButton() {
-      await this.addProduct(this.product); // Llamar a la acción del store para agregar el producto
-      this.$router.back(); // Navegar de vuelta
-    },
+      try{
+        this.isLoading = true;
+        await this.addProduct(this.product); // Llamar a la acción del store para agregar el producto
+      }catch (error) {
+        console.error("Error al cargar el producto:", error);
+      } finally {
+        this.isLoading = false;
+        this.$router.back();
+      }}
   },
 };
 </script>

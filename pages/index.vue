@@ -2,7 +2,7 @@
   <div class="pb-8">
     <section class="flex flex-col items-start justify-center px-8 md:px-32 h-48 bg-secondary -mx-10 md:-mx-32 -mt-16 mb-8 banner bg-no-repeat"></section>
     <section class="-mt-20">
-      <Categories @category-selected="filterProducts" />
+      <Categories @category-selected="onCategorySelected" />
       <div class="text-center pt-10 flex flex-col justify-center items-center">
         <h1 class="text-primary">Get Doggy Stickers!</h1>
         <p class="text-gray-400 leading-6">Times are tough. Liven up your home with some cute Doggy Stickers. 🐶</p>
@@ -30,6 +30,11 @@ export default {
   },
   methods: {
     ...mapActions(['fetchProducts', 'filterProducts']),
+    
+    // Método para manejar la selección de la categoría
+    onCategorySelected(category) {
+      this.filterProducts(category); // Llama a la acción Vuex para filtrar productos
+    },
   },
 };
 </script>

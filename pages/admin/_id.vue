@@ -103,8 +103,7 @@
 </template>
 
 <script>
-import { db, firebase } from "@/plugins/firebase";
-import "firebase/storage";
+import { mapActions } from 'vuex';
 
 export default {
   middleware: "auth",
@@ -117,6 +116,7 @@ export default {
         category: "",
         price: "",
         description: "",
+        image: "",
       },
       isLoading: false,
     };
@@ -125,78 +125,47 @@ export default {
     this.loadProduct();
   },
   methods: {
+    ...mapActions(['updateProduct', 'uploadImage']),
+    
     async loadProduct() {
       try {
         const productHandle = this.$route.params.id;
-        const productQuery = await db
-          .collection("products")
-          .where("handle", "==", productHandle)
-          .get();
-
-        if (productQuery.empty) {
+        const productQuery = await this.$store.dispatch('fetchProductBySlug', productHandle);
+        
+        if (!this.product) {
           console.error("Producto no encontrado");
           return;
         }
 
-        const productData = productQuery.docs[0].data();
-        this.product = {
-          image: productData.image,
-          name: productData.name,
-          handle: productData.handle,
-          category: productData.category,
-          price: productData.price,
-          description: productData.description,
-        };
+        this.product = this.$store.state.product;
       } catch (error) {
         console.error("Error al cargar el producto:", error);
       }
     },
+    
     async onUpdate() {
       try {
         this.isLoading = true;
-        const productQuery = await db
-          .collection("products")
-          .where("handle", "==", this.product.handle)
-          .get();
-
-        if (productQuery.empty) {
-          console.error("Producto no encontrado");
-          return;
-        }
-
-        const productId = productQuery.docs[0].id;
-        const productRef = db.collection("products").doc(productId);
-
-        await productRef.update({
-          name: this.product.name,
-          handle: this.product.handle,
-          categories: this.product.category,
-          price: this.product.price,
-          description: this.product.description,
-        });
-
-        console.log("Producto actualizado correctamente");
+        await this.updateProduct(this.product); // Llama a la acción del store para actualizar el producto
+        alert("Producto actualizado correctamente");
       } catch (error) {
         console.error("Error al actualizar el producto:", error);
       } finally {
         this.isLoading = false;
-        alert("Producto actualizado correctamente");
       }
     },
-    onFileChange(event) {
-      const file = event.target.files[0];
-      const storageRef = firebase.storage().ref();
-      const fileRef = storageRef.child(file.name);
 
-      fileRef
-        .put(file)
-        .then(() => {
-          console.log("Archivo subido correctamente");
-          // Aquí puedes obtener la URL del archivo subido y guardarla en tu objeto product si es necesario
-        })
-        .catch((error) => {
+    async onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          const imageUrl = await this.uploadImage(file); // Sube la imagen usando la acción del store
+          this.product.image = imageUrl;
+          console.log("Archivo subido correctamente:", imageUrl);
+        } catch (error) {
           console.error("Error al subir el archivo:", error);
-        });
+        }
+      }
     },
   },
 };
