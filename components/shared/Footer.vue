@@ -1,20 +1,19 @@
 <template>
   <footer class="relative bg-white pt-8 pb-6">
     <div class="container mx-auto px-4">
-      <div class="flex w-full justify-between flex-wrap">
+      <div class="flex w-full justify-between">
         <div class="px-4">
-          <nuxt-link to="/" class="flex space-x-2 items-center -m-1.5 p-1.5 mb-2">
+          <nuxt-link to="/" class="flex items-center -ml-4 -m-1.5 p-1.5 mb-2">
           <img
-            class="h-10 w-auto"
-            src="@/assets/images/Logo.svg"
+            class="h-7 w-auto"
+            src="@/assets/images/Logo.png"
             alt=""
           />
-          <span class=" text-lg font-semibold">Doggy Stickers</span>
         </nuxt-link>
-          <p class="w-6/12 text-xs">
-            Difundimos la cultura del vino a través de propuestas que eleven el
-            placer de beber.
+          <p class="text-xs">
+            Vivimos en un mundo donde si no eres perfecto vas a sufrir por serlo...
           </p>
+          <p class="text-xs">Normalizando lo imperfecto.</p>
         </div>
         <div class="items-end px-4">
           <div class="flex flex-wrap items-top mb-6">
@@ -28,14 +27,14 @@
                   <a
                     class="text-gray-800 hover:text-primary text-opacity-70 hover:text-opacity-70 transition-all ease-out duration-300 block pb-2"
                     href="#"
-                    >inquieto.experiencias@gmail.com</a
+                    >circulatelo@gmail.com</a
                   >
                 </li>
                 <li>
                   <a
                     class="text-gray-800 hover:text-primary text-opacity-70 hover:text-opacity-70 transition-all ease-out duration-300 block pb-2"
                     href="#"
-                    >096260462</a
+                    >3137642466</a
                   >
                 </li>
                 <li>

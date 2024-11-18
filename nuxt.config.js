@@ -2,7 +2,7 @@ export default {
   mode: "universal",
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "Doggy Stickers",
+    title: "Circulátelo",
     htmlAttrs: {
       lang: "en",
     },

@@ -15,7 +15,7 @@
         :key="category.id"
         @click="selectCategory(category)"
         :class="{ active: activeCategory === category.name }"
-        class="inline-block p-4 rounded-t-lg text-primary text-opacity-50"
+        class="inline-block p-4 rounded-t-lg text-primary text-opacity-50 uppercase"
       >
         {{ category.name }}
       </button>

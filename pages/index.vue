@@ -4,8 +4,8 @@
     <section class="-mt-20">
       <Categories @category-selected="onCategorySelected" />
       <div class="text-center pt-10 flex flex-col justify-center items-center">
-        <h1 class="text-primary">Get Doggy Stickers!</h1>
-        <p class="text-gray-400 leading-6">Times are tough. Liven up your home with some cute Doggy Stickers. 🐶</p>
+        <h1 class="text-primary mb-2">Ve a tu ritmo.</h1>
+        <p class="text-gray-400 leading-6">Normalizando lo imperfecto. 🥰</p>
       </div>
       <Catalog :products="filteredProducts" />
     </section>
@@ -41,7 +41,7 @@ export default {
 
 <style>
 .banner {
-  background: url("https://firebasestorage.googleapis.com/v0/b/emprendimiento-01.appspot.com/o/banner-optimized.webp?alt=media&token=9801e769-8d77-4ebb-8912-76b065ad2ab9");
+  background: url("https://firebasestorage.googleapis.com/v0/b/emprendimiento-02-b9df4.appspot.com/o/BannerCircu.jpg?alt=media&token=d99eb52a-257e-4857-b3d1-aebff7e311a1");
   background-repeat: no-repeat;
   background-size: cover;
 }

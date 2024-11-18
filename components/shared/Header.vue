@@ -6,8 +6,8 @@
     >
       <div class="flex lg:flex-1">
         <nuxt-link to="/" class="flex space-x-2 items-center -m-1.5 p-1.5">
-          <img class="h-10 w-auto" src="@/assets/images/Logo.svg" alt="" />
-          <span class="text-lg font-semibold">Doggy Stickers</span>
+          <img class="h-8 w-auto" src="@/assets/images/CIRCULATELO_LOGOTIPO-removebg-preview.png" alt="" />
+          <!-- <span class="text-lg font-semibold">Doggy Stickers</span> -->
         </nuxt-link>
       </div>
 
