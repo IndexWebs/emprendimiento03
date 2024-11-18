@@ -16,19 +16,7 @@ export default {
       { rel: "icon", type: "image/x-icon", href: "/favicon.png" },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Karla:wght@300&display=swap',
-      },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Karla:wght@400&display=swap',
-      },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Karla:wght@500&display=swap',
-      },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Karla:wght@700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Salsa&display=swap',
       },
     ],
   },

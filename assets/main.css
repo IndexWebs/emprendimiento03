@@ -1,10 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Salsa&display=swap');
 
-body{
-    font-family: sans-serif;
-}
 h1{
-    font-family: "Salsa", serif;
+    font-family: "Salsa", serif !important; 
     @apply text-3xl md:text-5xl 2xl:text-6xl text-secondary text-opacity-95 uppercase font-extrabold leading-3 md:leading-10;
 }
 h2{
