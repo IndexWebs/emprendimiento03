@@ -74,12 +74,13 @@
           >
             {{ product.name }}
           </h1>
-          <p class="text-3xl text-secondary mb-2">${{ product.price }}</p>
-          <InputNumber :value="cantidad" @input="updaeValue" class="mb-2" />
-          <PrimaryButton @click="addToCart" text="Agregar al carrito" />
+          <p class="text-2xl text-secondary mb-2 opacity-80 font-light">${{ product.price }}</p>
+          <!-- <InputNumber :value="cantidad" @input="updaeValue" class="mb-2" /> -->
+          <PrimaryButton @click="handleAddToCart" text="Agregar al carrito" />
           <div class="mt-10">
             <h3 class="text-sm font-medium text-gray-900">Detalles</h3>
-            <div class="mt-4">
+            <div class="mt-2">
+              <p class="font-medium" >Talle:<span class="lowercase font-light"> {{ product.talle }}</span></p>
               <p class="col-span-12 text-gray-500 font-light leading-7 mb-2">
                 {{ product.description }}
               </p>
@@ -201,7 +202,7 @@
 
 <script>
 import eventBus from "@/plugins/eventBus";
-import InputNumber from "@/components/shared/inputs/InputNumber.vue";
+// import InputNumber from "@/components/shared/inputs/InputNumber.vue";
 import PrimaryButton from "~/components/shared/PrimaryButton.vue";
 
 export default {
@@ -218,20 +219,15 @@ export default {
       return this.$store.state.product;
     },
   },
-  components: { InputNumber, PrimaryButton },
+  components: { PrimaryButton },
   methods: {
     updaeValue(newOne) {
       this.cantidad = newOne;
     },
-    addToCart() {
-      const total = parseInt(this.product.price) * this.cantidad;
-      this.$store.commit("addItem", {
-        id: this.product.id,
-        name: this.product.name,
-        image: this.product.image,
-        qty: this.cantidad,
-        category: this.product.category,
-        price: total,
+    handleAddToCart() {
+      this.$store.dispatch("addToCart", {
+        product: this.product,
+        quantity: this.cantidad,
       });
       eventBus.$emit("addToCart");
     },

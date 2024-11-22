@@ -86,10 +86,10 @@ export default {
   components: { PrimaryButton },
   computed: {
     items() {
-      return this.$store.state.cart.items;
+      return this.$store.getters.cartItems;
     },
     total() {
-      return this.items.reduce((acc, item) => acc + item.price, 0);
+      return this.$store.getters.cartTotal;
     },
   },
   methods: {
@@ -97,26 +97,10 @@ export default {
       this.$emit("click");
     },
     enviarOrden() {
-      var number = +59897955640;
-      var pedido = "";
-      var total = this.total;
-      const itemsLength = this.items.length;
-      for (let i = 0; i < itemsLength; i++) {
-        const item = this.items[i];
-        pedido = pedido + "x" + item.qty + " " + item.name + " || ";
-        console.log(item.name + item.qty);
-      }
-      window.open(
-        `https://api.whatsapp.com/send?phone=${number}&text=%20${pedido}. **SUBTOTAL:${total}**`
-      );
+      this.$store.dispatch("enviarOrden");
     },
     removeFromCart(item) {
-      const index = this.$store.state.cart.items.findIndex(
-        (cartItem) => cartItem.id === item.id
-      );
-      if (index !== -1) {
-        this.$store.commit("removeItem", item);
-      }
+      this.$store.commit("removeItem", item);
     },
   },
 };
