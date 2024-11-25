@@ -5,7 +5,7 @@
       :key="index"
       :name="product.name"
       :category="product.category"
-      :image="product.image"
+      :image="product.images[0]"
       :slug="product.handle"
       :price="product.price"
     />
