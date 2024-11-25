@@ -81,7 +81,7 @@ const createStore = () => {
         commit("addItemToCart", {
           id: product.id,
           name: product.name,
-          image: product.image,
+          image: product.images[0],
           qty: quantity,
           category: product.category,
           price: totalPrice,
@@ -219,10 +219,14 @@ const createStore = () => {
           // Agregar las URLs de las imágenes al producto
           product.images = imageUrls;
 
-          // Guardar el producto en Firestore
-          await db.collection("products").add(product);
+          // Crear el documento en Firestore y obtener el ID
+          const docRef = await db.collection("products").add(product);
+          const productId = docRef.id;
 
-          // (Opcional) Refrescar productos después de agregar uno nuevo
+          // Actualizar el producto en Firestore con su ID
+          await db.collection("products").doc(productId).update({ id: productId });
+
+          // Refrescar productos después de agregar uno nuevo
           const response = await db.collection("products").get();
           const products = response.docs.map((doc) => ({
             id: doc.id,
@@ -233,6 +237,7 @@ const createStore = () => {
           console.error("Error adding product:", error);
         }
       },
+
       async deleteProduct({ commit, dispatch }, id) {
         try {
           const ref = db.collection("products").doc(id);
