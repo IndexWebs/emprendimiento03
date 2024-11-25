@@ -20,7 +20,7 @@
       <h4 class="mt-1">
         {{ name }}
       </h4>
-      <p class="text-sm text-gray-500">UYU {{ price }}</p>
+      <p class="text-sm text-gray-500">COP {{ price }}</p>
     </div>
   </div>
 </template>

@@ -47,7 +47,7 @@ export default {
       } else {
         return this.$store.dispatch(
           "filterProducts",
-          category.name.toUpperCase()
+          category.name
         );
       }
     },
