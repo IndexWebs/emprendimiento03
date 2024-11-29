@@ -49,6 +49,12 @@ const createStore = () => {
           state.cart.items.splice(index, 1);
         }
       },
+      UPDATE_PRODUCT_IMAGE(state, { productId, imageIndex, newImageUrl }) {
+        const product = state.products.find((p) => p.id === productId);
+        if (product) {
+          product.images[imageIndex] = newImageUrl;
+        }
+      },
     },
     getters: {
       cartTotal(state) {
@@ -191,18 +197,52 @@ const createStore = () => {
           throw error;
         }
       },
-      async uploadImage({ commit }, file) {
+      async uploadImage({ commit }, { file, oldImageUrl, productName }) {
         try {
           const storageRef = firebase.storage().ref();
-          const fileRef = storageRef.child(`products/${file.name}`);
+
+          // Ruta específica para la imagen del producto
+          const fileRef = storageRef.child(`products/${productName}/${file.name}`);
+
+          // Subir la nueva imagen
           const snapshot = await fileRef.put(file);
           const downloadURL = await snapshot.ref.getDownloadURL();
+
+          // Eliminar la imagen anterior si existe
+          if (oldImageUrl) {
+            const oldFileRef = storageRef.storage.refFromURL(oldImageUrl);
+            await oldFileRef.delete();
+          }
+
           return downloadURL;
         } catch (error) {
-          console.error("Error al subir el archivo:", error);
+          console.error("Error al manejar la imagen:", error);
           throw error;
         }
       },
+      async updateProductImage({ commit }, { productId, imageIndex, newImageUrl }) {
+        try {
+          const productRef = firebase.firestore().collection("products").doc(productId);
+
+          // Obtener el producto actual
+          const productDoc = await productRef.get();
+          if (!productDoc.exists) throw new Error("Producto no encontrado");
+
+          const productData = productDoc.data();
+          const updatedImages = [...productData.images];
+          updatedImages[imageIndex] = newImageUrl;
+
+          // Actualizar el array de imágenes en Firestore
+          await productRef.update({ images: updatedImages });
+
+          // Opcional: actualizar el store localmente
+          commit("UPDATE_PRODUCT_IMAGE", { productId, imageIndex, newImageUrl });
+        } catch (error) {
+          console.error("Error al actualizar la imagen en el producto:", error);
+          throw error;
+        }
+      },
+
       async addProduct({ commit }, product) {
         try {
           const storageRef = firebase.storage().ref();
