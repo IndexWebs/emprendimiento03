@@ -87,6 +87,7 @@ export default {
     return {
       product: {
         name: null,
+        status: 'onStock',
         description: null,
         images: [],
         handle: "",
