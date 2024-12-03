@@ -11,31 +11,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="product in filteredProducts"
-          :key="product.id"
-          class="bg-white border-b"
-        >
-          <th
-            scope="row"
-            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-          >
+        <tr v-for="product in filteredProducts" :key="product.id" class="bg-white border-b">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
             {{ product.name }}
           </th>
           <td class="px-6 py-4">{{ product.category }}</td>
           <td class="px-6 py-4">${{ product.price }}</td>
           <td class="px-6 py-4">{{ product.description }}</td>
           <td class="px-6 py-4 flex items-center space-x-2">
-            <nuxt-link
-              :to="'admin/' + product.handle"
-              class="font-medium text-secondary hover:underline"
-              ><EditIcon class="w-5 h-5"
-            /></nuxt-link>
-            <span
-              @click="deleteDocument(product.id)"
-              class="font-medium text-primary hover:underline"
-              ><TrashIcon class="w-5 h-5"
-            /></span>
+            <nuxt-link :to="`/admin/${product.handle}`" class="font-medium text-secondary hover:underline">
+              <EditIcon class="w-5 h-5" />
+            </nuxt-link>
+            <span @click="deleteDocument(product.id)" class="font-medium text-primary hover:underline">
+              <TrashIcon class="w-5 h-5" />
+            </span>
           </td>
         </tr>
       </tbody>
@@ -65,13 +54,13 @@ export default {
   },
   methods: {
     ...mapActions(['fetchProducts', 'filterProducts', 'deleteProduct']),
-  
+
     async deleteDocument(id) {
       const confirmDelete = window.confirm(
         "¿Estás seguro de que quieres eliminar este documento?"
       );
       if (!confirmDelete) {
-        return; 
+        return;
       }
       await this.deleteProduct(id); // Llama a la acción del store
     },
