@@ -167,25 +167,27 @@ const createStore = () => {
             .collection("products")
             .where("handle", "==", product.handle)
             .get();
-
+      
           if (productQuery.empty) {
             throw new Error("Producto no encontrado");
           }
-
+      
           const productId = productQuery.docs[0].id;
           const productRef = db.collection("products").doc(productId);
-
+      
+          // Asegúrate de incluir todas las propiedades que quieres actualizar, incluyendo 'images'
           await productRef.update({
             name: product.name,
             handle: product.handle,
             category: product.category,
             price: product.price,
             description: product.description,
+            images: product.images, // Agregar el array de imágenes actualizado
           });
-
+      
           console.log("Producto actualizado correctamente");
-
-          // Vuelve a obtener los productos si es necesario
+      
+          // Opcional: Vuelve a obtener los productos y actualiza el estado del store
           const response = await db.collection("products").get();
           const products = response.docs.map((doc) => ({
             id: doc.id,
@@ -197,6 +199,7 @@ const createStore = () => {
           throw error;
         }
       },
+      
       async uploadImage({ commit }, { file, oldImageUrl, productName }) {
         try {
           const storageRef = firebase.storage().ref();

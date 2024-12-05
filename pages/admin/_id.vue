@@ -22,6 +22,15 @@
           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
       </div>
       <div class="relative z-0 w-full mb-6 group">
+        <input type="file" @change="onAddImages" multiple
+          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+          placeholder=" " />
+        <label
+          class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+          Agregar imágenes
+        </label>
+      </div>
+      <div class="relative z-0 w-full mb-6 group">
         <input type="text" v-model="product.handle"
           class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           required />
@@ -117,64 +126,102 @@ export default {
       this.selectedImageIndex = index;
     },
 
-    async onFileChange(event) {
-      const file = event.target.files[0];
-      if (file && this.selectedImageIndex !== null) {
-        // Registrar la imagen seleccionada localmente
-        const oldImageUrl = this.product.images[this.selectedImageIndex];
-
-        // Guardar el cambio en el array temporal
-        this.imageChanges.push({
-          index: this.selectedImageIndex,
-          file,
-          oldImageUrl,
-        });
-
-        // Actualizar la vista previa local
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.product.images[this.selectedImageIndex] = e.target.result; // Mostrar la vista previa
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert("Por favor, selecciona una imagen para reemplazar.");
+    async onAddImages(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) {
+        alert("No se seleccionaron imágenes.");
+        return;
       }
-    },
-
-    async onUpdate() {
-      if (this.isLoading) return;
 
       try {
         this.isLoading = true;
+        const newImageUrls = [];
 
-        // 1. Subir nuevas imágenes y actualizar el producto en Firestore
-        for (const change of this.imageChanges) {
-          const { file, oldImageUrl, index } = change;
-
-          // Subir la nueva imagen y obtener su URL, usando el nombre del producto
-          const newImageUrl = await this.$store.dispatch("uploadImage", {
+        // Subir cada imagen seleccionada
+        for (const file of files) {
+          const imageUrl = await this.$store.dispatch("uploadImage", {
             file,
-            oldImageUrl,
             productName: this.product.name, // Usamos el nombre del producto para crear la ruta
           });
-
-          // Actualizar la imagen localmente y sincronizar con Firestore
-          await this.$store.dispatch("updateProductImage", {
-            productId: this.product.id,
-            imageIndex: index,
-            newImageUrl,
-          });
-          this.product.images[index] = newImageUrl;
+          newImageUrls.push(imageUrl);
         }
-        await this.$store.dispatch("updateProduct", this.product);
-        this.imageChanges = [];
-        alert("Producto actualizado correctamente");
+
+        // Actualizar el producto con las nuevas imágenes
+        const updatedImages = [...this.product.images, ...newImageUrls];
+        await this.$store.dispatch("updateProduct", {
+          ...this.product,
+          images: updatedImages,
+        });
+
+        // Actualizar el estado local
+        this.product.images = updatedImages;
+        alert("Imágenes agregadas correctamente.");
       } catch (error) {
-        console.error("Error al actualizar el producto:", error);
+        console.error("Error al agregar imágenes:", error);
+        alert("Ocurrió un error al agregar las imágenes.");
       } finally {
         this.isLoading = false;
       }
     },
+
+  async onFileChange(event) {
+    const file = event.target.files[0];
+    if (file && this.selectedImageIndex !== null) {
+      // Registrar la imagen seleccionada localmente
+      const oldImageUrl = this.product.images[this.selectedImageIndex];
+
+      // Guardar el cambio en el array temporal
+      this.imageChanges.push({
+        index: this.selectedImageIndex,
+        file,
+        oldImageUrl,
+      });
+
+      // Actualizar la vista previa local
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.product.images[this.selectedImageIndex] = e.target.result; // Mostrar la vista previa
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Por favor, selecciona una imagen para reemplazar.");
+    }
   },
+
+  async onUpdate() {
+    if (this.isLoading) return;
+
+    try {
+      this.isLoading = true;
+
+      // 1. Subir nuevas imágenes y actualizar el producto en Firestore
+      for (const change of this.imageChanges) {
+        const { file, oldImageUrl, index } = change;
+
+        // Subir la nueva imagen y obtener su URL, usando el nombre del producto
+        const newImageUrl = await this.$store.dispatch("uploadImage", {
+          file,
+          oldImageUrl,
+          productName: this.product.name, // Usamos el nombre del producto para crear la ruta
+        });
+
+        // Actualizar la imagen localmente y sincronizar con Firestore
+        await this.$store.dispatch("updateProductImage", {
+          productId: this.product.id,
+          imageIndex: index,
+          newImageUrl,
+        });
+        this.product.images[index] = newImageUrl;
+      }
+      await this.$store.dispatch("updateProduct", this.product);
+      this.imageChanges = [];
+      alert("Producto actualizado correctamente");
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+    } finally {
+      this.isLoading = false;
+    }
+  },
+},
 };
 </script>

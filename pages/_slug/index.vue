@@ -36,17 +36,17 @@
       </nav>
 
       <div class="grid grid-cols-12 mx-auto pt-8">
-        <div class="col-span-12 md:col-span-6 pb-8 max-h-80 mt-4 mr-8">
+        <div class="col-span-12 md:col-span-6 pb-8 mt-4 mr-8">
           <div id="custom-controls-gallery" class="relative w-full">
             <!-- Carousel wrapper -->
             <div id="gallery" class="relative w-full">
               <!-- Carousel wrapper -->
-              <div class="relative h-56 overflow-hidden rounded-lg md:h-80">
+              <div class="relative h-56 overflow-hidden rounded-lg md:h-100">
                 <div v-for="(image, index) in product.images" :key="index" :class="[
-                  'absolute duration-700 ease-in-out col-span-12 md:col-span-6 pb-8',
+                  ' duration-700 ease-in-out col-span-12 md:col-span-6 pb-8',
                   index === activeIndex ? 'block' : 'hidden'
                 ]">
-                  <img :src="image" class="object-contain overflow-hidden"
+                  <img :src="image" class=" object-contain overflow-hidden object-center h-full w-full"
                     alt="" />
                 </div>
               </div>
