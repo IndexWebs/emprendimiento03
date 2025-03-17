@@ -45,7 +45,7 @@
       </div>
       <div class="grid md:grid-cols-2 md:gap-6">
         <div class="relative z-0 w-full mb-6 group">
-          <input type="text" v-model="product.price"
+          <input type="text" v-model="formattedPrice" @input="updatePrice" @keypress="allowOnlyNumbers"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" " required />
           <label
@@ -87,13 +87,13 @@ export default {
     return {
       product: {
         name: null,
-        status: 'onStock',
         description: null,
         images: [],
         handle: "",
-        price: null,
+        price: '',
         category: null,
-        talle: null
+        talle: null,
+        stock: true
       },
       isLoading: false
     };
@@ -108,6 +108,10 @@ export default {
         return "";
       }
     },
+    formattedPrice() {
+      if (!this.product.price) return '';
+      return this.product.price.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    },
   },
   created() {
     this.fetchCategories();
@@ -115,20 +119,29 @@ export default {
   },
   methods: {
     ...mapActions(["fetchCategories", "addProduct", "fetchTalles"]),
-    onFileChange(event) {
-      this.product.images = Array.from(event.target.files);
+    updatePrice(event) {
+      const rawValue = event.target.value.replace(/\D/g, '');
+      this.product.price = rawValue;
     },
+    allowOnlyNumbers(event) {
+      const charCode = event.key.charCodeAt(0);
+      if (charCode < 48 || charCode > 57) {
+        event.preventDefault();
+      }},
+      onFileChange(event) {
+        this.product.images = Array.from(event.target.files);
+      },
     async onSubmitButton() {
-      try {
-        this.isLoading = true;
-        await this.addProduct(this.product); // Llamar a la acción del store para agregar el producto
-      } catch (error) {
-        console.error("Error al cargar el producto:", error);
-      } finally {
-        this.isLoading = false;
-        this.$router.back();
+        try {
+          this.isLoading = true;
+          await this.addProduct(this.product);
+        } catch (error) {
+          console.error("Error al cargar el producto:", error);
+        } finally {
+          this.isLoading = false;
+          this.$router.back();
+        }
       }
-    }
-  },
-};
+    },
+  };
 </script>

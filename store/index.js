@@ -183,6 +183,8 @@ const createStore = () => {
             price: product.price,
             description: product.description,
             images: product.images, // Agregar el array de imágenes actualizado
+            talle: product.talle,
+            stock: product.stock
           });
       
           console.log("Producto actualizado correctamente");

@@ -3,11 +3,12 @@
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-white uppercase bg-secondary">
         <tr>
-          <th scope="col" class="px-6 py-3">Product name</th>
-          <th scope="col" class="px-6 py-3">Category</th>
-          <th scope="col" class="px-6 py-3">Price</th>
-          <th scope="col" class="px-6 py-3">Description</th>
-          <th scope="col" class="px-6 py-3">Action</th>
+          <th scope="col" class="px-6 py-3">Nombre de producto</th>
+          <th scope="col" class="px-6 py-3">Categoria</th>
+          <th scope="col" class="px-6 py-3">Precio</th>
+          <th scope="col" class="px-6 py-3">Estado</th>
+          <th scope="col" class="px-6 py-3">Descripcion</th>
+          <th scope="col" class="px-6 py-3">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -17,6 +18,11 @@
           </th>
           <td class="px-6 py-4">{{ product.category }}</td>
           <td class="px-6 py-4">${{ product.price }}</td>
+          <td class="px-6 py-4">
+            <span :class="product.stock ? ' bg-green-200' : ' bg-red-300'" class="text-xs py-2 px-2 flex flex-col flex-shrink-0 rounded-lg">
+              {{ product.stock ? 'En Stock' : 'Sin Stock' }}
+            </span>
+          </td>
           <td class="px-6 py-4">{{ product.description }}</td>
           <td class="px-6 py-4 flex items-center space-x-2">
             <nuxt-link :to="`/admin/${product.handle}`" class="font-medium text-secondary hover:underline">
