@@ -1,5 +1,5 @@
 <template>
-    <form v-if="firma">
+    <form v-if="firma && expirationDate && referencia && monto">
       <script
         src="https://checkout.wompi.co/widget.js"
         data-render="button"
@@ -8,7 +8,7 @@
         :data-amount-in-cents="monto"
         :data-reference="referencia"
         :data-redirect-url="redirectUrl"
-        :data-expiration-time="expirationTime"
+        :data-expiration-time="expirationDate"
         :data-signature:integrity="firma"
       ></script>
     </form>
@@ -23,15 +23,15 @@
     data() {
       return {
         firma: null,
-        expirationTime: null,
-        publicKey: "pub_test_KaWx4OD7zBxnvln3aUpbDx9RhkfddyFh", // Cambialo en producción
+        expirationDate: null,
+        publicKey: "pub_test_KaWx4OD7zBxnvln3aUpbDx9RhkfddyFh", // Cambiar en prod
         redirectUrl: "https://tusitio.netlify.app/thanks",
       };
     },
     async mounted() {
-      // Expira en 1 hora
+      // Generar fecha de expiración para dentro de 1 hora
       const expiration = Math.floor(Date.now() / 1000) + 60 * 60;
-      this.expirationTime = expiration;
+      this.expirationDate = expiration;
   
       const res = await fetch("/.netlify/functions/generate-signature", {
         method: "POST",
@@ -40,7 +40,7 @@
           reference: this.referencia,
           amountInCents: this.monto,
           currency: "COP",
-          expirationTime: expiration,
+          expirationTime: expiration, // OJO: la función sigue esperando este nombre
         }),
       });
   
