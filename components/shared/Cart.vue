@@ -20,9 +20,7 @@
             <ul role="list" class="-my-6 divide-y divide-gray-200">
               <li v-for="item in items" :key="item.id" class="flex py-6">
                 <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                  <img :src="item.image"
-                    alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt."
-                    class="h-full w-full object-cover object-center" />
+                  <img :src="item.image" alt="Imagen del producto" class="h-full w-full object-cover object-center" />
                 </div>
 
                 <div class="ml-4 flex flex-1 flex-col">
@@ -35,7 +33,6 @@
                   </div>
                   <div class="flex items-center justify-between text-sm">
                     <p class="text-gray-500">Cantidad: {{ item.qty }}</p>
-
                     <div class="flex">
                       <button @click="removeFromCart(item)" type="button"
                         class="font-medium text-primary text-opacity-70 hover:text-opacity-50 transition-all duration-300 ease-in-out">
@@ -60,6 +57,7 @@
         </p>
         <div class="mt-6">
           <PrimaryButton @click="enviarOrden" text="Enviar Por Whatsapp" />
+          <Checkout :monto="Number(total.toString().replace('.', ''))" :referencia="referencia" />
         </div>
         <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
           <p>
@@ -77,13 +75,19 @@
 </template>
 
 <script>
+import Checkout from "./Checkout.vue";
 import PrimaryButton from "./PrimaryButton.vue";
 
 export default {
+  components: { PrimaryButton, Checkout },
   props: {
     showCart: { type: Boolean },
   },
-  components: { PrimaryButton },
+  data() {
+    return {
+      referencia:`pedido-${new Date().toISOString().replace(/[:.]/g, '-')}`,
+    };
+  },
   computed: {
     items() {
       return this.$store.getters.cartItems;
