@@ -57,7 +57,7 @@
         </p>
         <div class="mt-6">
           <PrimaryButton @click="enviarOrden" text="Enviar Por Whatsapp" />
-          <Checkout :monto="Number(total.toString().replace('.', ''))" :referencia="referencia" />
+          <Checkout :monto="parseInt(total.replace(/\./g, '')) * 100" :referencia="referencia" />
         </div>
         <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
           <p>
@@ -85,27 +85,27 @@ export default {
   },
   data() {
     return {
-      referencia:`pedido-${new Date().toISOString().replace(/[:.]/g, '-')}`,
+      referencia: `pedido-${new Date().toISOString().replace(/[:.]/g, '-')}`,
     };
+},
+computed: {
+  items() {
+    return this.$store.getters.cartItems;
   },
-  computed: {
-    items() {
-      return this.$store.getters.cartItems;
-    },
-    total() {
-      return this.$store.getters.cartTotal;
-    },
+  total() {
+    return this.$store.getters.cartTotal;
   },
-  methods: {
-    close() {
-      this.$emit("click");
-    },
-    enviarOrden() {
-      this.$store.dispatch("enviarOrden");
-    },
-    removeFromCart(item) {
-      this.$store.commit("removeItem", item);
-    },
+},
+methods: {
+  close() {
+    this.$emit("click");
   },
+  enviarOrden() {
+    this.$store.dispatch("enviarOrden");
+  },
+  removeFromCart(item) {
+    this.$store.commit("removeItem", item);
+  },
+},
 };
 </script>
