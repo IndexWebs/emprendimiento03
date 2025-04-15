@@ -1,32 +1,25 @@
-const crypto = require('crypto');
-
-const generateSignature = (reference, amountInCents, currency, expirationTime) => {
-  const secret = process.env.WOMPI_INTEGRITY_SECRET;
-  const payload = `${amountInCents}${currency}${reference}${expirationTime}`;
-  return crypto.createHmac('sha256', secret).update(payload).digest('hex');
-};
+const crypto = require("crypto");
 
 exports.handler = async (event) => {
   try {
-    const { reference, amountInCents, currency, expirationTime } = JSON.parse(event.body);
+    const body = JSON.parse(event.body);
 
-    if (!reference || !amountInCents || !currency || !expirationTime) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Missing required fields' })
-      };
-    }
+    const { reference, amountInCents, currency, expirationTime } = body;
 
-    const signature = generateSignature(reference, amountInCents, currency, expirationTime);
+    const secret = process.env.WOMPI_INTEGRITY_SECRET;
+
+    const cadena = `${reference}${amountInCents}${currency}${expirationTime}${secret}`;
+    const hash = crypto.createHash("sha256").update(cadena).digest("hex");
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ signature })
+      body: JSON.stringify({ signature: hash }),
     };
-  } catch (error) {
-    console.error("ERROR en generate-signature:", error);
+  } catch (err) {
+    console.error("Error generando la firma:", err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'INTERNAL_SERVER_ERROR', details: error.message })
+      body: JSON.stringify({ error: "Error generando firma" }),
     };
   }
 };
