@@ -26,7 +26,7 @@
       return {
         firma: null,
         expirationDate: null,
-        publicKey: "pub_test_KaWx4OD7zBxnvln3aUpbDx9RhkfddyFh",
+        publicKey: "pub_prod_ljfcuLuIeXJEyeuZYLzrYj0414c65Itv",
         redirectUrl: "https://tastytumbler.shop/products/vaso-palomitero",
       };
     },
