@@ -9,8 +9,8 @@ if (!firebase.apps.length) {
     projectId: "emprendimiento-03",
     storageBucket: "emprendimiento-03.firebasestorage.app",
     messagingSenderId: "327161056167",
-    appId: "1:327161056167:web:3fabffc2b3e10a4b5b0482",
-    measurementId: "G-960W6ZK3YX"
+    appId: "1:327161056167:web:fdb89586fb7af5f15b0482",
+    measurementId: "G-QGCHGQSM35"
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig)
