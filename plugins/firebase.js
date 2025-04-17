@@ -4,13 +4,13 @@ import 'firebase/firebase-auth'
 
 if (!firebase.apps.length) {
   const firebaseConfig = {
-    apiKey: "AIzaSyC327fqx-syHTWkh1sJFB5_mbXANjlHW_Y",
-    authDomain: "emprendimiento-02-b9df4.firebaseapp.com",
-    projectId: "emprendimiento-02-b9df4",
-    storageBucket: "emprendimiento-02-b9df4.appspot.com",
-    messagingSenderId: "713735354902",
-    appId: "1:713735354902:web:242187f8014ec73160d337",
-    measurementId: "G-2LQ7QFDP5V"
+    apiKey: "AIzaSyCZ_9a_7P2Nvb1O5rPqJ9KvI9kW_el4mA0",
+    authDomain: "emprendimiento-03.firebaseapp.com",
+    projectId: "emprendimiento-03",
+    storageBucket: "emprendimiento-03.firebasestorage.app",
+    messagingSenderId: "327161056167",
+    appId: "1:327161056167:web:3fabffc2b3e10a4b5b0482",
+    measurementId: "G-960W6ZK3YX"
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig)
