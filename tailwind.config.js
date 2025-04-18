@@ -6,8 +6,8 @@ module.exports = {
         sans: ['Karla', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: '#5b509c',
-        secondary: '#3f8233',
+        primary: '#fc7d00',
+        secondary: '#00998a',
         secondarylight: '#cbd799',
         background: '#e9e4d6'
       },
