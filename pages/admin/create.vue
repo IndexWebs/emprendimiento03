@@ -13,9 +13,9 @@
           <select v-model="product.talle"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             required>
-            <option value="" disabled selected>Selecciona un talle</option>
-            <option v-for="talle in talles" :key="talle.id">
-              {{ talle.name }}
+            <option value="" disabled selected>Selecciona un color</option>
+            <option v-for="color in colores" :key="color.id">
+              {{ talle.color }}
             </option>
           </select>
           <label
@@ -79,6 +79,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { formatPrice } from '@/utils/formatPrice';
 
 export default {
   middleware: "auth",
@@ -110,7 +111,7 @@ export default {
     },
     formattedPrice() {
       if (!this.product.price) return '';
-      return this.product.price.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return formatPrice(Number(this.product.price));
     },
   },
   created() {
@@ -121,7 +122,7 @@ export default {
     ...mapActions(["fetchCategories", "addProduct", "fetchTalles"]),
     updatePrice(event) {
       const rawValue = event.target.value.replace(/\D/g, '');
-      this.product.price = rawValue;
+      this.product.price = rawValue ? Number(rawValue) : 0;
     },
     allowOnlyNumbers(event) {
       const charCode = event.key.charCodeAt(0);

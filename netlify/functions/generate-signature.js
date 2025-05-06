@@ -4,11 +4,11 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
 
-    const { reference, amountInCents, currency, expirationTime } = body;
+    const { reference, amount_in_cents, currency, expiration_time } = body;
 
     const secret = process.env.WOMPI_INTEGRITY_SECRET;
 
-    const cadena = `${reference}${amountInCents}${currency}${expirationTime}${secret}`;
+    const cadena = `${reference}${amount_in_cents}${currency}${expiration_time}${secret}`;
     const hash = crypto.createHash("sha256").update(cadena).digest("hex");
 
     return {

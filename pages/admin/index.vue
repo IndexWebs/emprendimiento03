@@ -17,7 +17,7 @@
             {{ product.name }}
           </th>
           <td class="px-6 py-4">{{ product.category }}</td>
-          <td class="px-6 py-4">${{ product.price }}</td>
+          <td class="px-6 py-4">${{ formatPrice(product.price) }}</td>
           <td class="px-6 py-4">
             <span :class="product.stock ? ' bg-green-200' : ' bg-red-300'" class="text-xs py-2 px-2 flex flex-col flex-shrink-0 rounded-lg">
               {{ product.stock ? 'En Stock' : 'Sin Stock' }}
@@ -42,6 +42,7 @@
 import EditIcon from "~/components/shared/icons/EditIcon.vue";
 import TrashIcon from "~/components/shared/icons/TrashIcon.vue";
 import { mapState, mapActions } from 'vuex';
+import { formatPrice } from '@/utils/formatPrice';
 
 export default {
   components: { EditIcon, TrashIcon },

@@ -20,21 +20,27 @@
       <h4 class="mt-1">
         {{ name }}
       </h4>
-      <p class="text-sm text-gray-500">COP {{ price }}</p>
+      <p class="text-sm text-gray-500">COP {{ priceFormateado }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import { formatPrice } from '@/utils/formatPrice';
 export default {
   name: "ProductCard",
   props: {
     name: { type: String, default: "Basic Tee" },
     description: { type: String, default: "This is a short description" },
     category: { type: String, default: "shirt" },
-    price: { type: String, default: "35" },
+    price: { type: [String, Number], default: 35 },
     slug: { type: String, default: "product-name" },
     image: { type: String, default: "" },
   },
+  computed: {
+    priceFormateado() {
+      return formatPrice(Number(this.price));
+    }
+  }
 };
 </script>

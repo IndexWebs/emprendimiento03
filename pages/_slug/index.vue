@@ -1,211 +1,192 @@
 <template>
   <div class="bg-white mx-0 md:mx-24 px-10 pb-8">
-    <div class="pt-6">
+    <div class="pt-6 overflow-hidden">
       <nav aria-label="Breadcrumb" class="flex justify-between">
-        <ol role="list" class="flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
+        <ol class="flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
           <li>
             <div class="flex items-center">
               <a href="#" class="mr-2 text-sm font-medium text-gray-900">Products</a>
-              <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true"
-                class="h-5 w-4 text-gray-300">
+              <svg class="h-5 w-4 text-gray-300" fill="currentColor" viewBox="0 0 16 20">
                 <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
               </svg>
             </div>
           </li>
-
           <li>
             <div class="flex items-center">
-              <a href="#" class="mr-2 text-sm font-medium text-gray-900">{{
-                product.category
-                }}</a>
-              <svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true"
-                class="h-5 w-4 text-gray-300">
+              <a href="#" class="mr-2 text-sm font-medium text-gray-900">{{ product.category }}</a>
+              <svg class="h-5 w-4 text-gray-300" fill="currentColor" viewBox="0 0 16 20">
                 <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
               </svg>
             </div>
           </li>
-
           <li class="text-sm">
-            <a href="#" aria-current="page" class="font-medium text-gray-500 hover:text-gray-600">{{ product.name }}</a>
+            <a href="#" class="font-medium text-gray-500 hover:text-gray-600">{{ product.name }}</a>
           </li>
         </ol>
         <nuxt-link to="/"
-          class="font-medium text-secondary text-opacity-70 hover:text-opacity-50 transition-all duration-300 ease-in-out rounded-md uppercase text-xs">
-          <span>Volver</span>
-        </nuxt-link>
+          class="text-secondary text-opacity-70 hover:text-opacity-50 text-xs uppercase">Volver</nuxt-link>
       </nav>
 
-      <div class="grid grid-cols-12 mx-auto pt-8">
-        <div class="col-span-12 md:col-span-6 pb-8 mt-4 mr-8">
-          <div id="custom-controls-gallery" class="relative w-full">
-            <!-- Carousel wrapper -->
-            <div id="gallery" class="relative w-full">
-              <!-- Carousel wrapper -->
-              <div class="relative h-56 overflow-hidden rounded-lg md:h-100">
-                <div v-for="(image, index) in product.images" :key="index" :class="[
-                  ' duration-700 ease-in-out col-span-12 md:col-span-6 pb-8',
-                  index === activeIndex ? 'block' : 'hidden'
-                ]">
-                  <img :src="image" class=" object-contain overflow-hidden object-center h-full w-full"
-                    alt="" />
-                </div>
+      <div class="grid grid-cols-12 gap-8 pt-8">
+        <!-- Carousel IZQUIERDA -->
+        <div class="col-span-12 md:col-span-6">
+          <div class="relative w-full">
+            <div class="relative h-96 overflow-hidden rounded-lg">
+              <div v-for="(image, index) in product.images" :key="index"
+                :class="index === activeIndex ? 'block' : 'hidden'">
+                <img :src="image" class="h-full w-full object-contain object-center" />
               </div>
-              <!-- Slider controls -->
-              <button type="button"
-                class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                @click="prevImage">
-                <span
-                  class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                  <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M5 1 1 5l4 4" />
-                  </svg>
-                  <span class="sr-only">Previous</span>
-                </span>
+
+              <!-- Flechas -->
+              <button @click="prevImage" class="absolute top-1/2 left-0 -translate-y-1/2 px-4">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 6 10">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+                </svg>
               </button>
-              <button type="button"
-                class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                @click="nextImage">
-                <span
-                  class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                  <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="m1 9 4-4-4-4" />
-                  </svg>
-                  <span class="sr-only">Next</span>
-                </span>
+              <button @click="nextImage" class="absolute top-1/2 right-0 -translate-y-1/2 px-4">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 6 10">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                </svg>
               </button>
+            </div>
+
+            <!-- Miniaturas -->
+            <div class="flex mt-4 space-x-2 overflow-x-auto">
+              <div v-for="(thumb, i) in product.images" :key="i" @click="activeIndex = i"
+                :class="['w-16 h-16 rounded overflow-hidden cursor-pointer border-2', activeIndex === i ? 'border-secondary' : 'border-gray-200']">
+                <img :src="thumb" class="object-cover w-full h-full" />
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="pt-4 lg:row-span-3 lg:mt-0 col-span-12 md:col-span-6">
-          <h1 class="text-2xl font-bold text-secondary sm:text-3xl mb-2 uppercase">
+        <!-- LADO DERECHO -->
+        <div class="col-span-12 md:col-span-6 flex flex-col gap-4">
+          <!-- Precio -->
+          <p class="text-3xl font-semibold text-gray-900">${{ precioFormateado }}</p>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <div class="flex gap-1 text-yellow-400 text-lg">
+              <i class="fas fa-star" />
+              <i class="fas fa-star" />
+              <i class="fas fa-star" />
+              <i class="fas fa-star" />
+              <i class="fas fa-star-half-alt" />
+            </div>
+            <span>4.8/5 Star rating</span>
+          </div>
+
+          <!-- Título del producto -->
+          <h1 class="text-2xl font-bold text-gray-900">
             {{ product.name }}
           </h1>
-          <p class="text-2xl text-secondary mb-2 opacity-80 font-light">${{ product.price }}</p>
-          <!-- <InputNumber :value="cantidad" @input="updaeValue" class="mb-2" /> -->
-          <PrimaryButton @click="handleAddToCart" text="Agregar al carrito" />
-          <div class="mt-10">
-            <h3 class="text-sm font-medium text-gray-900">Detalles</h3>
-            <div class="mt-2">
-              <p class="font-medium">Talle:<span class="lowercase font-light"> {{ product.talle }}</span></p>
-              <p class="col-span-12 text-gray-500 font-light leading-7 mb-2">
-                {{ product.description }}
-              </p>
-              <!-- <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
-                <li class="text-gray-400">
-                  <span class="text-gray-600">{{ product.product_bodega ? product.product_bodega : '-' }}</span>
-                </li>
 
-              <li class="text-gray-400">
-                  <span class="text-gray-600">{{product.product_year ? product.product_year : '-'}}</span>
-                </li>
-  
-                <li class="text-gray-400">
-                  <span class="text-gray-600">URUGUAY</span>
-                </li>
+          <!-- Descripción corta -->
+          <p class="text-sm text-gray-700">
+            Enriched with the distinctive blend of Coffee and Apricot seed, Organikare's Coffee Scrub is the perfect
+            match between your exfoliate-thirsty skin and busy schedule.
+          </p>
+          <p class="text-sm text-gray-700">
+            Coffee beans' excellent cleansing and scrubbing properties unclog pores, eliminate blackheads and remove
+            dead cells from the surface of your skin while maintaining skin's elasticity.
+          </p>
+          <div v-if="product.variantes && product.variantes.length" class="mt-4">
+            <label for="variantes" class="block text-sm font-medium text-gray-700 mb-1">Seleccionar color</label>
+            <select id="color" v-model="selectedColor"
+              class="block w-full border border-gray-300 rounded px-3 py-2 pr-10 shadow-sm focus:ring-black focus:border-black sm:text-sm text-gray-900">
+              <option disabled value="">Selecciona un color</option>
+              <option v-for="variante in product.variantes" :key="variante" :value="variante">
+                {{ variante }}
+              </option>
+            </select>
+          </div>
+          <!-- Selector de cantidad y botón de agregar -->
+          <div class="flex gap-2 items-center mt-4">
+            <div class="flex border w-5/12 rounded overflow-hidden">
+              <button @click="decreaseQuantity" class="px-3 py-1 text-xl text-gray-800 hover:bg-gray-100">−</button>
+              <div class="px-4 py-1 text-base font-medium text-gray-900">{{ cantidad }}</div>
+              <button @click="increaseQuantity" class="px-3 py-1 text-xl text-gray-800 hover:bg-gray-100">+</button>
+            </div>
 
-                <li class="text-gray-400">
-                  <span class="text-gray-600">750CC</span>
-                </li>
-              </ul> -->
+            <button
+              class="bg-black text-white px-6 py-2 text-sm font-medium rounded hover:bg-gray-800 transition w-full"
+              @click="handleAddToCart">
+              Add to Cart
+            </button>
+          </div>
+
+          <!-- Botón de compra directa -->
+          <nuxt-link to="/checkout"
+            class="bg-[#CB4D32] text-white px-6 py-3 text-sm font-medium rounded w-full sm:w-auto mt-2 hover:bg-[#b13f27] transition">
+            Buy Now
+          </nuxt-link>
+
+          <!-- Share -->
+          <div class="mt-4 text-sm text-gray-700">
+            <span class="font-medium">Share:</span>
+            <div class="flex gap-3 mt-1">
+              <i class="fab fa-facebook text-lg"></i>
+              <i class="fab fa-linkedin text-lg"></i>
+              <i class="far fa-heart text-lg"></i>
             </div>
           </div>
-          <!-- Reviews -->
 
-          <!-- 
-            <div class="mt-10">
-            <h2 class="text-sm font-medium text-gray-900">Details</h2>
+          <!-- We Accept -->
+          <div class="mt-6">
+            <p class="text-sm text-gray-700 font-medium mb-1">We Accept</p>
+            <!-- Visa -->
+            <img src="@/assets/images//metodos/visa.svg" class="inline mr-2 w-5" alt="Visa">
 
-            <div class="mt-4 space-y-6">
-              <p class="text-sm text-gray-600">
-                {{ product.text }}
-              </p>
-            </div>
+            <!-- Mastercard -->
+            <img src="@/assets/images/metodos/master.svg" class="inline mr-2 w-5" alt="Mastercard">
+
+            <!-- American Express -->
+            <img src="@/assets/images/metodos/american.svg" class="inline mr-2 w-5" alt="American Express">
+
+            <!-- Bancolombia -->
+            <img src="@/assets/images/metodos/bancolombia.svg" class="inline mr-2 w-5" alt="Bancolombia">
+
+            <!-- Nequi -->
+            <img src="@/assets/images/metodos/nequi.png" class="inline mr-2 w-5" alt="Nequi">
+
+            <!-- PSE -->
+            <img src="@/assets/images/metodos/pse.png" class="inline mr-2 w-5" alt="PSE">
+
+            <!-- Efectivo -->
+            <img src="@/assets/images/metodos/efectivo.svg" class="inline w-5" alt="Efectivo">
+
+            <img src="@/assets/images/metodos/credito.svg" class="inline w-5" alt="Credito">
           </div>
-            
-            <div class="mt-6">
-            <h3 class="sr-only">Reviews</h3>
-            <div class="flex items-center">
-              <div class="flex items-center">
-             
-                <svg
-                  class="text-gray-900 h-5 w-5 flex-shrink-0"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
 
-                <svg
-                  class="text-gray-900 h-5 w-5 flex-shrink-0"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
+          <!-- Returns -->
+          <div class="mt-4 bg-gray-100 p-4 rounded flex justify-between items-center">
+            <p class="text-sm font-medium">30-days Free Returns</p>
+            <a href="#" class="text-sm text-blue-600 underline">Read More</a>
+          </div>
 
-                <svg
-                  class="text-gray-900 h-5 w-5 flex-shrink-0"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
+          <!-- Detalles -->
+          <div class="mt-6">
+            <h3 class="text-sm font-semibold text-gray-800 mb-2">Details</h3>
+            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
+              <li>Cut, sewn, and dyed in Los Angeles</li>
+              <li>Garment dyed</li>
+              <li>Pre-shrunk</li>
+              <li>Soft 100% ringspun cotton</li>
+              <li>Printed with water-based ink</li>
+            </ul>
+          </div>
 
-                <svg
-                  class="text-gray-900 h-5 w-5 flex-shrink-0"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-
-                <svg
-                  class="text-gray-200 h-5 w-5 flex-shrink-0"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-              <p class="sr-only">4 out of 5 stars</p>
-              <a
-                href="#"
-                class="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >117 reviews</a
-              >
-            </div>
-          </div> -->
+          <!-- Shipping -->
+          <div class="mt-4">
+            <h3 class="text-sm font-semibold text-gray-800 mb-2">Shipping & Returns</h3>
+            <!-- Podés hacer un toggle aquí si querés ocultarlo -->
+            <p class="text-sm text-gray-600">
+              We offer free shipping on orders over $50 and easy 30-day returns.
+            </p>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -215,6 +196,7 @@
 import eventBus from "@/plugins/eventBus";
 // import InputNumber from "@/components/shared/inputs/InputNumber.vue";
 import PrimaryButton from "~/components/shared/PrimaryButton.vue";
+import { formatPrice } from '@/utils/formatPrice';
 
 export default {
   async fetch({ store, params }) {
@@ -224,12 +206,16 @@ export default {
     return {
       activeIndex: 0,
       cantidad: 1,
+      selectedColor: '',
     };
   },
   computed: {
     product() {
       return this.$store.state.product;
     },
+    precioFormateado() {
+      return formatPrice(Number(this.product.price));
+    }
   },
   components: { PrimaryButton },
   methods: {
@@ -237,10 +223,17 @@ export default {
       this.cantidad = newOne;
     },
     handleAddToCart() {
+      if (this.product.color && this.product.color.length && !this.selectedColor) {
+        alert("Por favor seleccioná un color.");
+        return;
+      }
+
       this.$store.dispatch("addToCart", {
         product: this.product,
         quantity: this.cantidad,
+        color: this.selectedColor,
       });
+
       eventBus.$emit("addToCart");
     },
     nextImage() {
@@ -251,6 +244,12 @@ export default {
       this.activeIndex =
         (this.activeIndex - 1 + this.product.images.length) %
         this.product.images.length;
+    },
+    increaseQuantity() {
+      this.cantidad++
+    },
+    decreaseQuantity() {
+      if (this.cantidad > 1) this.cantidad--
     },
   },
 };

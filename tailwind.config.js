@@ -9,7 +9,7 @@ module.exports = {
         primary: '#fc7d00',
         secondary: '#00998a',
         secondarylight: '#cbd799',
-        background: '#e9e4d6'
+        background: '#f6f6f6'
       },
       spacing: {
         '100': '30rem',

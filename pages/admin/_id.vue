@@ -65,7 +65,7 @@
       </div>
       <div class="grid md:grid-cols-2 md:gap-6">
         <div class="relative z-0 w-full mb-6 group">
-          <input type="text" v-model="product.price"
+          <input type="text" v-model.number="product.price"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" " required />
           <label
@@ -112,6 +112,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { formatPrice } from '@/utils/formatPrice';
 
 export default {
   middleware: "auth",
@@ -142,6 +143,10 @@ export default {
   },
   computed: {
     ...mapState(["categories", "talles"]),
+    formattedPrice() {
+      if (!this.product.price) return '';
+      return formatPrice(Number(this.product.price));
+    },
   },
   methods: {
     ...mapActions(['updateProduct', 'uploadImage', "fetchCategories", "fetchTalles"]),

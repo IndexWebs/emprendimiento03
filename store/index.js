@@ -1,6 +1,9 @@
 import Vuex from "vuex";
 import { db, firebase } from "@/plugins/firebase";
 import "firebase/storage";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
+
+
 const createStore = () => {
   return new Vuex.Store({
     state: {
@@ -30,24 +33,21 @@ const createStore = () => {
         state.product = product;
       },
       addItemToCart(state, item) {
-        const existingItem = state.cart.items.find((cartItem) => cartItem.id === item.id);
-        if (existingItem) {
-          existingItem.qty += item.qty;
-          existingItem.price = (
-            Number(existingItem.price.replace('.', '')) +
-            Number(item.price.replace('.', ''))
-          )
-            .toFixed(2)
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        } else {
-          state.cart.items.push(item);
-        }
+        const newItem = {
+          ...item,
+          uid: Date.now() + Math.random(), // UID único por si querés identificarlo luego
+        };
+
+        state.cart.items.push(newItem);
       },
       removeItem(state, payload) {
         const index = state.cart.items.findIndex((item) => item.id === payload.id);
         if (index !== -1) {
           state.cart.items.splice(index, 1);
         }
+      },
+      vaciarCarrito(state) {
+        state.cart.items = [];
       },
       UPDATE_PRODUCT_IMAGE(state, { productId, imageIndex, newImageUrl }) {
         const product = state.products.find((p) => p.id === productId);
@@ -57,16 +57,88 @@ const createStore = () => {
       },
     },
     getters: {
-      cartTotal(state) {
-        return state.cart.items
-          .reduce((acc, item) => acc + parseFloat(item.price), 0)
-          .toFixed(3);
-      },
       cartItems(state) {
         return state.cart.items;
       },
+      cartSubtotal(state) {
+        return state.cart.items.reduce((acc, item) => acc + Number(item.price) * item.qty, 0);
+      },
+      cartDiscount(state, getters) {
+        const cantidad = getters.cartItems.length;
+        if (cantidad === 1) return 0;
+        if (cantidad === 2) return 2000 * cantidad;
+        if (cantidad >= 3) return 3000 * cantidad;
+        return 0;
+      },
+      cartTotalWithDiscount(state, getters) {
+        return getters.cartSubtotal - getters.cartDiscount;
+      },
+      cartTotal(state, getters) {
+        // Para compatibilidad, cartTotal será igual a cartTotalWithDiscount
+        return getters.cartTotalWithDiscount;
+      },
     },
     actions: {
+      async crearPedidoContraEntrega({ state, commit, getters }, datosCliente) {
+        try {
+          const pedido = {
+            ...datosCliente,
+            productos: state.cart.items,
+            subtotal: getters.cartSubtotal,
+            descuento: getters.cartDiscount,
+            total: getters.cartTotalWithDiscount,
+            estado: "pendiente",
+            metodoPago: "contraentrega",
+            fecha: Date.now()
+          };
+
+          const docRef = await db.collection("pedidos").add(pedido);
+          const pedidoId = docRef.id;
+
+          // Actualizar el documento con su propio ID
+          await db.collection("pedidos").doc(pedidoId).update({ id: pedidoId });
+          
+          // Vaciar el carrito después de crear el pedido
+          commit("vaciarCarrito");
+
+          // Guardar el pedido en localStorage para la página de gracias
+          localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
+
+        } catch (error) {
+          console.error("Error al crear pedido contra entrega:", error);
+          throw error;
+        }
+      },
+      async crearPedidoWompi({ state, commit, getters }, datosCliente) {
+        try {
+          const pedido = {
+            ...datosCliente,
+            productos: state.cart.items,
+            subtotal: getters.cartSubtotal,
+            descuento: getters.cartDiscount,
+            total: getters.cartTotalWithDiscount,
+            estado: "pagado",
+            metodoPago: "Wompi",
+            fecha: Date.now(),
+          };
+      
+          const docRef = await db.collection("pedidos").add(pedido);
+          const pedidoId = docRef.id;
+      
+          await db.collection("pedidos").doc(pedidoId).update({ id: pedidoId });
+          
+          // Vaciar el carrito después de crear el pedido
+          commit("vaciarCarrito");
+
+          // Guardar el pedido en localStorage para la página de gracias
+          localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
+      
+        } catch (error) {
+          console.error("Error al crear pedido con Wompi:", error);
+          throw error;
+        }
+      },
+      
       enviarOrden({ getters }) {
         const number = "+573150361379";
         const pedido = getters.cartItems
@@ -80,17 +152,17 @@ const createStore = () => {
         window.open(whatsappUrl);
       },
 
-      addToCart({ commit }, { product, quantity }) {
-        const formattedPrice = Number(product.price).toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        const totalPrice = (Number(product.price) * quantity).toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
+      addToCart({ commit }, { product, quantity, color }) {
+        // Asegurarse de que el precio sea un número
+        const priceNumber = Number(product.price);
         commit("addItemToCart", {
           id: product.id,
           name: product.name,
           image: product.images[0],
           qty: quantity,
           category: product.category,
-          price: totalPrice,
+          price: priceNumber,
+          color: color
         });
       },
       async fetchProducts({ commit }) {
@@ -167,14 +239,14 @@ const createStore = () => {
             .collection("products")
             .where("handle", "==", product.handle)
             .get();
-      
+
           if (productQuery.empty) {
             throw new Error("Producto no encontrado");
           }
-      
+
           const productId = productQuery.docs[0].id;
           const productRef = db.collection("products").doc(productId);
-      
+
           // Asegúrate de incluir todas las propiedades que quieres actualizar, incluyendo 'images'
           await productRef.update({
             name: product.name,
@@ -186,9 +258,9 @@ const createStore = () => {
             talle: product.talle,
             stock: product.stock
           });
-      
+
           console.log("Producto actualizado correctamente");
-      
+
           // Opcional: Vuelve a obtener los productos y actualiza el estado del store
           const response = await db.collection("products").get();
           const products = response.docs.map((doc) => ({
@@ -201,7 +273,7 @@ const createStore = () => {
           throw error;
         }
       },
-      
+
       async uploadImage({ commit }, { file, oldImageUrl, productName }) {
         try {
           const storageRef = firebase.storage().ref();
