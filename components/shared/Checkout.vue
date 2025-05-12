@@ -23,11 +23,24 @@ export default {
       firma: null,
       expirationDate: null,
       publicKey: "pub_test_KaWx4OD7zBxnvln3aUpbDx9RhkfddyFh",
-      redirectUrl: "https://tastytumbler.shop/products/vaso-palomitero",
+      redirectUrl: `${window.location.origin}/thanks`,
     };
   },
 
   async mounted() {
+    // Guardar datos en localStorage justo antes de mostrar el widget de Wompi
+    try {
+      const form = this.$root.$children[0]?.form;
+      const cart = this.$root.$children[0]?.$store?.state?.cart?.items || [];
+      if (form) {
+        localStorage.setItem('checkoutData', JSON.stringify(form));
+      }
+      if (cart) {
+        localStorage.setItem('carritoData', JSON.stringify(cart.map(item => ({ ...item }))));
+      }
+    } catch (e) {
+      console.error('Error guardando datos en localStorage antes de Wompi:', e);
+    }
     window.addEventListener("payment_accepted", () => {
       this.$emit("pago-aceptado")
     })

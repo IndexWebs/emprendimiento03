@@ -39,7 +39,7 @@
                     <input 
                         v-model="form.telefono" 
                         type="tel" 
-                        placeholder="Número de teléfono" 
+                        placeholder="Número de WhatsApp (ej: 3001234567)" 
                         class="input"
                         :class="{ 'border-red-500': errores.includes('Teléfono inválido') }"
                         required 
@@ -94,7 +94,7 @@
                 <Checkout 
                     :monto="montoFormateado" 
                     :referencia="referencia" 
-                    @pago-aceptado="procesarPago('Wompi')" 
+                    @pago-aceptado="onPagoAceptadoWompi" 
                 />
                 <PrimaryButton 
                     class="w-full" 
@@ -138,7 +138,7 @@
                     <span>Subtotal</span>
                     <span>${{ subtotalFormateado }}</span>
                 </div>
-                <div class="flex justify-between">
+                <div v-if="descuento && descuento > 0" class="flex justify-between">
                     <span>Descuento</span>
                     <span>-{{ descuentoFormateado }}</span>
                 </div>
@@ -254,26 +254,70 @@ export default {
                 return;
             }
 
+            // Guardar datos antes de iniciar cualquier pago
+            localStorage.setItem('checkoutData', JSON.stringify(this.form));
+            localStorage.setItem('carritoData', JSON.stringify(this.items.map(item => ({ ...item }))));
+
             this.enviando = true;
             this.cargando = true;
 
             try {
                 const datosPedido = {
                     ...this.form,
+                    productos: this.items,
+                    subtotal: this.$store.getters.cartSubtotal,
+                    descuento: this.$store.getters.cartDiscount,
+                    total: this.$store.getters.cartTotalWithDiscount,
+                    estado: metodoPago === 'Wompi' ? 'pendiente' : 'pagado',
                     metodoPago,
                     referencia: this.referencia,
+                    fecha: Date.now(),
                 };
 
                 if (metodoPago === "Wompi") {
-                    await this.$store.dispatch("crearPedidoWompi", datosPedido);
+                    console.log('Creando pedido pendiente en Firebase con:', datosPedido);
+                    const pedidoId = await this.$store.dispatch("crearPedidoWompi", datosPedido);
+                    console.log('Pedido pendiente creado con ID:', pedidoId);
+                    localStorage.setItem('ultimoPedidoId', pedidoId);
+                    this.cargando = false;
+                    this.enviando = false;
+                    return;
                 } else {
                     await this.$store.dispatch("crearPedidoContraEntrega", datosPedido);
+                    // Limpiar datos guardados después de un pago exitoso SOLO para contraentrega
+                    localStorage.removeItem('checkoutData');
+                    localStorage.removeItem('carritoData');
+                    // Vaciar el carrito
+                    await this.$store.dispatch("vaciarCarrito");
+                    this.$router.push("/thanks");
                 }
+            } catch (error) {
+                this.manejarError(error);
+            } finally {
+                this.cargando = false;
+                this.enviando = false;
+            }
+        },
 
-                // Limpiar datos guardados después de un pago exitoso
+        async onPagoAceptadoWompi() {
+            if (!this.validarFormulario()) {
+                this.errores = ["Por favor completa todos los campos antes de pagar"];
+                return;
+            }
+            // Guardar datos antes de crear el pedido
+            localStorage.setItem('checkoutData', JSON.stringify(this.form));
+            localStorage.setItem('carritoData', JSON.stringify(this.items.map(item => ({ ...item }))));
+            this.enviando = true;
+            this.cargando = true;
+            try {
+                const datosPedido = {
+                    ...this.form,
+                    metodoPago: "Wompi",
+                    referencia: this.referencia,
+                };
+                await this.$store.dispatch("crearPedidoWompi", datosPedido);
                 localStorage.removeItem('checkoutData');
-                // Vaciar el carrito
-                await this.$store.dispatch("vaciarCarrito");
+                localStorage.removeItem('carritoData');
                 this.$router.push("/thanks");
             } catch (error) {
                 this.manejarError(error);

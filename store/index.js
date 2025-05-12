@@ -104,6 +104,36 @@ const createStore = () => {
           // Guardar el pedido en localStorage para la página de gracias
           localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
 
+          // Enviar notificación por correo
+          const productosTexto = pedido.productos.map(p => `- ${p.name} (${p.qty} unidades)`).join('\n');
+          const mensaje = `¡Nuevo Pedido #${pedidoId}!\n\nCliente: ${pedido.nombre}\nTeléfono: ${pedido.telefono}\nDirección: ${pedido.direccion}\n\nProductos:\n${productosTexto}\n\nSubtotal: $${pedido.subtotal}\nDescuento: $${pedido.descuento}\nTotal: $${pedido.total}`;
+          
+          // Llamar a la función de Netlify para enviar el correo
+          await fetch('/.netlify/functions/sendEmail', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              to: 'mugnestoficial@gmail.com', // Tu correo electrónico
+              subject: `Nuevo Pedido #${pedidoId}`,
+              text: mensaje,
+              html: `
+                <h2>¡Nuevo Pedido #${pedidoId}!</h2>
+                <p><strong>Cliente:</strong> ${pedido.nombres} ${pedido.apellidos}</p>
+                <p><strong>Teléfono:</strong> ${pedido.telefono}</p>
+                <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+                <h3>Productos:</h3>
+                <ul>
+                  ${pedido.productos.map(p => `<li>${p.name} (${p.qty} unidades)</li>`).join('')}
+                </ul>
+                <p><strong>Subtotal:</strong> $${pedido.subtotal}</p>
+                <p><strong>Descuento:</strong> $${pedido.descuento}</p>
+                <p><strong>Total:</strong> $${pedido.total}</p>
+              `
+            })
+          });
+
         } catch (error) {
           console.error("Error al crear pedido contra entrega:", error);
           throw error;
@@ -113,11 +143,11 @@ const createStore = () => {
         try {
           const pedido = {
             ...datosCliente,
-            productos: state.cart.items,
-            subtotal: getters.cartSubtotal,
-            descuento: getters.cartDiscount,
-            total: getters.cartTotalWithDiscount,
-            estado: "pagado",
+            productos: state.cart.items.length ? state.cart.items : datosCliente.productos,
+            subtotal: datosCliente.subtotal || getters.cartSubtotal,
+            descuento: datosCliente.descuento || getters.cartDiscount,
+            total: datosCliente.total || getters.cartTotalWithDiscount,
+            estado: datosCliente.estado || "pagado",
             metodoPago: "Wompi",
             fecha: Date.now(),
           };
@@ -127,12 +157,45 @@ const createStore = () => {
       
           await db.collection("pedidos").doc(pedidoId).update({ id: pedidoId });
           
-          // Vaciar el carrito después de crear el pedido
-          commit("vaciarCarrito");
+          // Vaciar el carrito después de crear el pedido solo si ya está pagado
+          if (pedido.estado === "pagado") {
+            commit("vaciarCarrito");
+          }
 
           // Guardar el pedido en localStorage para la página de gracias
-          localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
+          localStorage.setItem('ultimoPedido', JSON.stringify({ ...pedido, id: pedidoId }));
+
+          // Enviar notificación por correo
+          const productosTexto = pedido.productos.map(p => `- ${p.name} (${p.qty} unidades)`).join('\n');
+          const mensaje = `¡Nuevo Pedido #${pedidoId}!\n\nCliente: ${pedido.nombre}\nTeléfono: ${pedido.telefono}\nDirección: ${pedido.direccion}\n\nProductos:\n${productosTexto}\n\nSubtotal: $${pedido.subtotal}\nDescuento: $${pedido.descuento}\nTotal: $${pedido.total}`;
+          
+          // Llamar a la función de Netlify para enviar el correo
+          await fetch('/.netlify/functions/sendEmail', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              to: 'tu-email@ejemplo.com', // Tu correo electrónico
+              subject: `Nuevo Pedido #${pedidoId}`,
+              text: mensaje,
+              html: `
+                <h2>¡Nuevo Pedido #${pedidoId}!</h2>
+                <p><strong>Cliente:</strong> ${pedido.nombre}</p>
+                <p><strong>Teléfono:</strong> ${pedido.telefono}</p>
+                <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+                <h3>Productos:</h3>
+                <ul>
+                  ${pedido.productos.map(p => `<li>${p.name} (${p.qty} unidades)</li>`).join('')}
+                </ul>
+                <p><strong>Subtotal:</strong> $${pedido.subtotal}</p>
+                <p><strong>Descuento:</strong> $${pedido.descuento}</p>
+                <p><strong>Total:</strong> $${pedido.total}</p>
+              `
+            })
+          });
       
+          return pedidoId;
         } catch (error) {
           console.error("Error al crear pedido con Wompi:", error);
           throw error;
@@ -380,6 +443,16 @@ const createStore = () => {
           await dispatch("fetchProducts");
         } catch (error) {
           console.error("Error al eliminar el producto:", error);
+          throw error;
+        }
+      },
+
+      async actualizarEstadoPedido({ }, { id, estado }) {
+        try {
+          const pedidoRef = db.collection("pedidos").doc(id);
+          await pedidoRef.update({ estado });
+        } catch (error) {
+          console.error("Error al actualizar el estado del pedido:", error);
           throw error;
         }
       },

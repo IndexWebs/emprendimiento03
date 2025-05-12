@@ -62,6 +62,18 @@
 
         <!-- LADO DERECHO -->
         <div class="col-span-12 md:col-span-6 flex flex-col gap-4">
+          <!-- Personas viendo -->
+          <div class="mt-4 bg-red-100 rounded-xl flex items-center px-6 py-4 text-xs">
+            <svg class="w-4 h-4 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span class="font-bold text-xs text-gray-800 mr-1">{{ personasViendo }}</span>
+            <span class="text-gray-700 font-medium">Personas viendo este producto ahora!</span>
+          </div>
+
           <!-- Precio -->
           <p class="text-3xl font-semibold text-gray-900">${{ precioFormateado }}</p>
 
@@ -112,15 +124,16 @@
             <button
               class="bg-black text-white px-6 py-2 text-sm font-medium rounded hover:bg-gray-800 transition w-full"
               @click="handleAddToCart">
-              Add to Cart
+              Agregar al carrito
             </button>
           </div>
 
           <!-- Botón de compra directa -->
-          <nuxt-link to="/checkout"
-            class="bg-[#CB4D32] text-white px-6 py-3 text-sm font-medium rounded w-full sm:w-auto mt-2 hover:bg-[#b13f27] transition">
-            Buy Now
-          </nuxt-link>
+          <button
+            class="bg-[#CB4D32] text-white px-6 py-3 text-sm font-medium rounded w-full sm:w-auto mt-2 hover:bg-[#b13f27] transition"
+            @click="comprarAhora">
+            Comprar ahora
+          </button>
 
           <!-- Share -->
           <div class="mt-4 text-sm text-gray-700">
@@ -207,6 +220,7 @@ export default {
       activeIndex: 0,
       cantidad: 1,
       selectedColor: '',
+      personasViendo: Math.floor(Math.random() * 11) + 10 // 10 a 20
     };
   },
   computed: {
@@ -250,6 +264,18 @@ export default {
     },
     decreaseQuantity() {
       if (this.cantidad > 1) this.cantidad--
+    },
+    comprarAhora() {
+      if (this.product.color && this.product.color.length && !this.selectedColor) {
+        alert("Por favor selecciona un color.");
+        return;
+      }
+      this.$store.dispatch("addToCart", {
+        product: this.product,
+        quantity: this.cantidad,
+        color: this.selectedColor,
+      });
+      this.$router.push("/checkout");
     },
   },
 };
