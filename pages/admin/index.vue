@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     ...mapActions(['fetchProducts', 'filterProducts', 'deleteProduct']),
-
+    formatPrice,
     async deleteDocument(id) {
       const confirmDelete = window.confirm(
         "¿Estás seguro de que quieres eliminar este documento?"

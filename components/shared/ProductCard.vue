@@ -1,18 +1,18 @@
 <template>
   <div
     @click.stop="$router.push(slug)"
-    class="group relative col-span-12 md:col-span-3 cursor-pointer"
+    class="group relative w-full max-w-sm mx-auto shadow-md bg-white rounded-lg overflow-hidden lg:max-w-none lg:mx-0 lg:shadow-none lg:bg-transparent lg:rounded-none cursor-pointer"
   >
     <div
-      class="min-h-80 relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80"
+      class="w-full h-56 sm:h-64 md:h-72 lg:h-80 bg-gray-200 overflow-hidden"
     >
       <img
         :src="image"
         alt="product image"
-        class="h-full w-full object-cover object-center lg:h-full lg:w-full"
+        class="object-cover w-full h-full"
       />
     </div>
-    <div class="mt-4 text-left">
+    <div class="mt-4 text-left px-3 pb-3">
       <span
         class="mt-1 text-xs text-gray-500 py-1 px-4 bg-secondary bg-opacity-5 mb-2 rounded-sm"
         >{{ category }}</span

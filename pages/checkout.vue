@@ -1,5 +1,5 @@
 <template>
-    <div class="checkout-container grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 max-w-5xl mx-auto">
+    <div class="checkout-container flex-col md:grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 max-w-5xl mx-auto space-y-3 md:space-y-0">
         <!-- Formulario de pago -->
         <div class="payment-form bg-white rounded-2xl shadow p-6 col-span-8">
             <h2 class="text-xl font-semibold mb-4">Datos de envío</h2>

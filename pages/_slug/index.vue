@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white mx-0 md:mx-24 px-10 pb-8">
-    <div class="pt-6 overflow-hidden">
-      <nav aria-label="Breadcrumb" class="flex justify-between">
+  <div class="w-full max-w-md mx-auto px-2 md:max-w-6xl md:px-10 pb-8">
+    <div class="pt-0 md:pt-6 overflow-hidden">
+      <nav aria-label="Breadcrumb" class="hidden md:flex justify-between">
         <ol class="flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
           <li>
             <div class="flex items-center">
-              <a href="#" class="mr-2 text-sm font-medium text-gray-900">Products</a>
+              <a href="#" class="mr-2 text-sm font-medium text-gray-900">Productos</a>
               <svg class="h-5 w-4 text-gray-300" fill="currentColor" viewBox="0 0 16 20">
                 <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
               </svg>
@@ -27,11 +27,11 @@
           class="text-secondary text-opacity-70 hover:text-opacity-50 text-xs uppercase">Volver</nuxt-link>
       </nav>
 
-      <div class="grid grid-cols-12 gap-8 pt-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-8 pt-0 md:pt-8">
         <!-- Carousel IZQUIERDA -->
-        <div class="col-span-12 md:col-span-6">
+        <div class="col-span-1 md:col-span-6">
           <div class="relative w-full">
-            <div class="relative h-96 overflow-hidden rounded-lg">
+            <div class="relative h-64 sm:h-80 md:h-96 overflow-hidden rounded-lg bg-gray-100">
               <div v-for="(image, index) in product.images" :key="index"
                 :class="index === activeIndex ? 'block' : 'hidden'">
                 <img :src="image" class="h-full w-full object-contain object-center" />
@@ -61,9 +61,9 @@
         </div>
 
         <!-- LADO DERECHO -->
-        <div class="col-span-12 md:col-span-6 flex flex-col gap-4">
+        <div class="col-span-1 md:col-span-6 flex flex-col gap-4 px-1 md:px-0">
           <!-- Personas viendo -->
-          <div class="mt-4 bg-red-100 rounded-xl flex items-center px-6 py-4 text-xs">
+          <div class="mt-4 md:mt-0 bg-red-100 rounded-xl flex items-center px-4 py-3 text-xs">
             <svg class="w-4 h-4 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -75,7 +75,7 @@
           </div>
 
           <!-- Precio -->
-          <p class="text-3xl font-semibold text-gray-900">${{ precioFormateado }}</p>
+          <p class="text-3xl font-semibold text-gray-900 mt-2">${{ precioFormateado }}</p>
 
           <!-- Rating -->
           <div class="flex items-center gap-2 text-sm text-gray-700">
@@ -86,7 +86,7 @@
               <i class="fas fa-star" />
               <i class="fas fa-star-half-alt" />
             </div>
-            <span>4.8/5 Star rating</span>
+            <span>4.8/5 Calificación</span>
           </div>
 
           <!-- Título del producto -->
@@ -114,8 +114,8 @@
             </select>
           </div>
           <!-- Selector de cantidad y botón de agregar -->
-          <div class="flex gap-2 items-center mt-4">
-            <div class="flex border w-5/12 rounded overflow-hidden">
+          <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center mt-4">
+            <div class="flex border w-full sm:w-5/12 rounded overflow-hidden">
               <button @click="decreaseQuantity" class="px-3 py-1 text-xl text-gray-800 hover:bg-gray-100">−</button>
               <div class="px-4 py-1 text-base font-medium text-gray-900">{{ cantidad }}</div>
               <button @click="increaseQuantity" class="px-3 py-1 text-xl text-gray-800 hover:bg-gray-100">+</button>
@@ -129,15 +129,11 @@
           </div>
 
           <!-- Botón de compra directa -->
-          <button
-            class="bg-[#CB4D32] text-white px-6 py-3 text-sm font-medium rounded w-full sm:w-auto mt-2 hover:bg-[#b13f27] transition"
-            @click="comprarAhora">
-            Comprar ahora
-          </button>
+          <PrimaryButton class="w-full" @click="comprarAhora" text="Comprar ahora"/>
 
           <!-- Share -->
           <div class="mt-4 text-sm text-gray-700">
-            <span class="font-medium">Share:</span>
+            <span class="font-medium">Compartir:</span>
             <div class="flex gap-3 mt-1">
               <i class="fab fa-facebook text-lg"></i>
               <i class="fab fa-linkedin text-lg"></i>
@@ -147,7 +143,7 @@
 
           <!-- We Accept -->
           <div class="mt-6">
-            <p class="text-sm text-gray-700 font-medium mb-1">We Accept</p>
+            <p class="text-sm text-gray-700 font-medium mb-1">Aceptamos</p>
             <!-- Visa -->
             <img src="@/assets/images//metodos/visa.svg" class="inline mr-2 w-5" alt="Visa">
 
@@ -174,13 +170,13 @@
 
           <!-- Returns -->
           <div class="mt-4 bg-gray-100 p-4 rounded flex justify-between items-center">
-            <p class="text-sm font-medium">30-days Free Returns</p>
-            <a href="#" class="text-sm text-blue-600 underline">Read More</a>
+            <p class="text-sm font-medium">Devoluciones gratis en 30 días</p>
+            <a href="#" class="text-sm text-blue-600 underline">Leer más</a>
           </div>
 
           <!-- Detalles -->
           <div class="mt-6">
-            <h3 class="text-sm font-semibold text-gray-800 mb-2">Details</h3>
+            <h3 class="text-sm font-semibold text-gray-800 mb-2">Detalles</h3>
             <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
               <li>Cut, sewn, and dyed in Los Angeles</li>
               <li>Garment dyed</li>
@@ -192,10 +188,10 @@
 
           <!-- Shipping -->
           <div class="mt-4">
-            <h3 class="text-sm font-semibold text-gray-800 mb-2">Shipping & Returns</h3>
+            <h3 class="text-sm font-semibold text-gray-800 mb-2">Envíos y Devoluciones</h3>
             <!-- Podés hacer un toggle aquí si querés ocultarlo -->
             <p class="text-sm text-gray-600">
-              We offer free shipping on orders over $50 and easy 30-day returns.
+              Ofrecemos envío gratis en pedidos superiores a $50 y devoluciones fáciles en 30 días.
             </p>
           </div>
         </div>

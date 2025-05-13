@@ -1,7 +1,7 @@
 <template>
   <div class="pb-8">
-    <section class="flex flex-col items-start justify-center px-8 md:px-32 h-80 bg-secondary -mx-10 md:-mx-32 -mt-16 mb-8 banner bg-no-repeat"></section>
-    <section class="-mt-20">
+    <section class="flex flex-col items-start justify-center h-80 bg-secondary mx-0 md:-mx-32 -mt-16 mb-8 banner bg-no-repeat"></section>
+    <section class="-mt-20 px-2 sm:px-4 md:px-8">
       <Categories @category-selected="onCategorySelected" />
       <!-- <div class="text-center pt-10 flex flex-col justify-center items-center">
         <h1 class="text-primary mb-2">Ve a tu ritmo.</h1>
