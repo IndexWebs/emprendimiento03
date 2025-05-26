@@ -3,7 +3,7 @@
     <Header @click="cart" @openMobileMenu="openMenu"/>
     <MobileMenu v-if="showMobileMenu" @openMobileMenu="openMenu"/>
     <Cart @click="cart" :showCart="openCart" />
-    <div class="px-0 md:px-14 py-0 md:py-10 bg-background">
+    <div class="px-0 md:px-14 pb-0 md:pb-10 bg-background">
       <nuxt />
     </div>
     <Footer/>

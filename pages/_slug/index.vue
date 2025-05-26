@@ -61,7 +61,7 @@
         </div>
 
         <!-- LADO DERECHO -->
-        <div class="col-span-1 md:col-span-6 flex flex-col gap-4 px-1 md:px-0">
+        <div class="col-span-1 md:col-span-6 flex flex-col gap-4 px-1 md:px-0 md:overflow-y-auto md:max-h-screen md:pr-2">
           <!-- Personas viendo -->
           <div class="mt-4 md:mt-0 bg-red-100 rounded-xl flex items-center px-4 py-3 text-xs">
             <svg class="w-4 h-4 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,11 +121,13 @@
               <button @click="increaseQuantity" class="px-3 py-1 text-xl text-gray-800 hover:bg-gray-100">+</button>
             </div>
 
-            <button
-              class="bg-black text-white px-6 py-2 text-sm font-medium rounded hover:bg-gray-800 transition w-full"
-              @click="handleAddToCart">
-              Agregar al carrito
-            </button>
+            <PrimaryButton
+              class="w-full"
+              @click="handleAddToCart"
+              text="Agregar al carrito"
+              variant="secondary"
+              variantStyle="light"
+            />
           </div>
 
           <!-- Botón de compra directa -->
