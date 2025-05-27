@@ -22,7 +22,7 @@ export default {
     return {
       firma: null,
       expirationDate: null,
-      publicKey: "pub_test_KaWx4OD7zBxnvln3aUpbDx9RhkfddyFh",
+      publicKey: "pub_prod_ljfcuLuIeXJEyeuZYLzrYj0414c65Itv",
       redirectUrl: `${window.location.origin}/thanks`,
     };
   },

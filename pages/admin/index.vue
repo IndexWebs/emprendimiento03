@@ -1,5 +1,8 @@
 <template>
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <button @click="limpiarTalleDeTodosLosProductos" class="bg-red-500 text-white px-4 py-2 rounded mb-4">
+      Limpiar campo talle de todos los productos
+    </button>
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-white uppercase bg-secondary">
         <tr>
@@ -43,6 +46,7 @@ import EditIcon from "~/components/shared/icons/EditIcon.vue";
 import TrashIcon from "~/components/shared/icons/TrashIcon.vue";
 import { mapState, mapActions } from 'vuex';
 import { formatPrice } from '@/utils/formatPrice';
+import firebase from 'firebase/app';
 
 export default {
   components: { EditIcon, TrashIcon },
@@ -71,6 +75,22 @@ export default {
       }
       await this.deleteProduct(id); // Llama a la acción del store
     },
+    async limpiarTalleDeTodosLosProductos() {
+      try {
+        const db = firebase.firestore();
+        const productosRef = db.collection('products');
+        const snapshot = await productosRef.get();
+        const batch = db.batch();
+        snapshot.forEach(doc => {
+          batch.update(doc.ref, { talle: firebase.firestore.FieldValue.delete() });
+        });
+        await batch.commit();
+        alert('Campo talle eliminado de todos los productos.');
+      } catch (error) {
+        alert('Error eliminando talle: ' + error.message);
+        console.error(error);
+      }
+    }
   },
 };
 </script>

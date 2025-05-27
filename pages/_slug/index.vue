@@ -95,14 +95,10 @@
           </h1>
 
           <!-- Descripción corta -->
-          <p class="text-sm text-gray-700">
-            Enriched with the distinctive blend of Coffee and Apricot seed, Organikare's Coffee Scrub is the perfect
-            match between your exfoliate-thirsty skin and busy schedule.
+          <p class="text-sm text-gray-700" v-if="product.description">
+            {{ product.description }}
           </p>
-          <p class="text-sm text-gray-700">
-            Coffee beans' excellent cleansing and scrubbing properties unclog pores, eliminate blackheads and remove
-            dead cells from the surface of your skin while maintaining skin's elasticity.
-          </p>
+
           <div v-if="product.variantes && product.variantes.length" class="mt-4">
             <label for="variantes" class="block text-sm font-medium text-gray-700 mb-1">Seleccionar color</label>
             <select id="color" v-model="selectedColor"
@@ -177,14 +173,10 @@
           </div>
 
           <!-- Detalles -->
-          <div class="mt-6">
+          <div class="mt-6" v-if="product.detalles && product.detalles.length">
             <h3 class="text-sm font-semibold text-gray-800 mb-2">Detalles</h3>
             <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
-              <li>Cut, sewn, and dyed in Los Angeles</li>
-              <li>Garment dyed</li>
-              <li>Pre-shrunk</li>
-              <li>Soft 100% ringspun cotton</li>
-              <li>Printed with water-based ink</li>
+              <li v-for="(detalle, i) in product.detalles" :key="i">{{ detalle }}</li>
             </ul>
           </div>
 

@@ -9,18 +9,6 @@
           <label for="floating_repeat_password"
             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre</label>
         </div>
-        <div class="relative z-0 w-full mb-6 group">
-          <select v-model="product.talle"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            required>
-            <option value="" disabled selected>Selecciona un color</option>
-            <option v-for="color in colores" :key="color.id">
-              {{ talle.color }}
-            </option>
-          </select>
-          <label
-            class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Talle</label>
-        </div>
       </div>
       <div class="grid md:grid-cols-2 md:gap-6">
         <div class="relative z-0 w-full mb-6 group">
@@ -69,6 +57,14 @@
         <label
           class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Texto</label>
       </div>
+      <div class="relative z-0 w-full mb-6 group">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Detalles del producto</label>
+        <div v-for="(detalle, i) in product.detalles" :key="i" class="flex items-center mb-2 gap-2">
+          <input type="text" v-model="product.detalles[i]" class="flex-1 py-2 px-3 border rounded" placeholder="Detalle..." />
+          <button type="button" @click="product.detalles.splice(i, 1)" class="text-red-500 text-lg">✕</button>
+        </div>
+        <button type="button" @click="product.detalles.push('')" class="mt-2 px-3 py-1 bg-blue-100 text-blue-700 rounded">Agregar detalle</button>
+      </div>
       <button type="submit" @click.prevent="onSubmitButton"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         {{ isLoading ? 'Cargando...' : 'Crear' }}
@@ -93,8 +89,8 @@ export default {
         handle: "",
         price: '',
         category: null,
-        talle: null,
-        stock: true
+        stock: true,
+        detalles: []
       },
       isLoading: false
     };
