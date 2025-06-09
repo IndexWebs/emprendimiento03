@@ -19,7 +19,7 @@
             ENVÍO GRATIS TODO COLOMBIA
           </span>
 
-          <transition-group name="fade" tag="div">
+          <transition-group name="fade" tag="div" class="h-20 flex items-center">
             <p v-if="currentTextIndex === 0" key="texto1" class="text-white text-lg md:text-xl mb-6">Esta semana
               lanzamos una PROMO ESPECIAL con envío gratis y pago contra entrega en todo Colombia!!</p>
             <p v-if="currentTextIndex === 1" key="texto2" class="text-white text-lg md:text-xl mb-6">¡Aprovecha nuestras
